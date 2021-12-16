@@ -1,0 +1,24 @@
+author: eccentric_nz
+description: Custom ores using item frames and resource pack custom models - with block break animations, custom drops and smelting.
+main: me.eccentric_nz.ores.Ores
+name: Ores
+load: STARTUP
+version: 1.0.0
+api-version: 1.18
+website: http://tardisjenkins.duckdns.org:8080/job/ores
+dev-url: http://tardisjenkins.duckdns.org:8080/job/ores
+permissions:
+  ores.use:
+    description: Permission to use the /ores command.
+    default: op
+commands:
+  ore:
+    description: Spawn in an ore where the player is looking.
+    usage: /<command> [ore type]
+    permission: ores.use
+    permission-message: You don't have the permission <permission> to use this command
+  pipe:
+    description: Spawn in a pipe where the player is looking or set the pipe type and rotation.
+    usage: /<command> [type] [rotation]
+    permission: ores.use
+    permission-message: You don't have the permission <permission> to use this command

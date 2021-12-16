@@ -1,0 +1,7 @@
+worlds:
+  world: true
+  world_nether: false
+  world_the_end: false
+  Earth: true
+  Earth_nether: false
+  Earth_the_end: false
