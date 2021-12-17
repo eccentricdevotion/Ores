@@ -11,6 +11,7 @@ public class Ores extends JavaPlugin {
     private static NamespacedKey oreKey;
     private static NamespacedKey pipeKey;
     private static NamespacedKey collectorKey;
+    private static NamespacedKey connectionKey;
     String pluginName;
 
     public static NamespacedKey getOreKey() {
@@ -25,6 +26,10 @@ public class Ores extends JavaPlugin {
         return collectorKey;
     }
 
+    public static NamespacedKey getConnectionKey() {
+        return connectionKey;
+    }
+
     @Override
     public void onDisable() {
     }
@@ -34,6 +39,7 @@ public class Ores extends JavaPlugin {
         oreKey = new NamespacedKey(this, "custom_ore");
         pipeKey = new NamespacedKey(this, "lead_pipe");
         collectorKey = new NamespacedKey(this, "lead_collector");
+        connectionKey = new NamespacedKey(this, "connection");
         saveDefaultConfig();
         PluginManager pm = getServer().getPluginManager();
         PluginDescriptionFile pdfFile = getDescription();
