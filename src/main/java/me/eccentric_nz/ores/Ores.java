@@ -44,6 +44,7 @@ public class Ores extends JavaPlugin {
         PluginManager pm = getServer().getPluginManager();
         PluginDescriptionFile pdfFile = getDescription();
         pluginName = ChatColor.GOLD + "[" + pdfFile.getName() + "]" + ChatColor.RESET + " ";
+        pm.registerEvents(new OresWorldInit(this), this);
         pm.registerEvents(new OresListener(this), this);
         pm.registerEvents(new PipesListener(this), this);
         pm.registerEvents(new OreSmelter(this), this);

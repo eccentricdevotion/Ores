@@ -11,6 +11,7 @@ import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Arrays;
@@ -72,6 +73,7 @@ public class LeadPipeFrame {
         List<Entity> ents = List.copyOf(location.getWorld().getNearbyEntities(potential, 0.4d, 0.4d, 0.4d, (e) -> e.getType() == EntityType.ITEM_FRAME));
         if (ents.size() > 0) {
             ItemFrame frame = (ItemFrame) ents.get(0);
+            PersistentDataContainer pdc = frame.getPersistentDataContainer();
             if (isPipe(frame)) {
                 switch (frame.getRotation()) {
                     case CLOCKWISE -> {
