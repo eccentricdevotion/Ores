@@ -1,6 +1,8 @@
 package me.eccentric_nz.ores;
 
 import com.google.common.collect.ImmutableList;
+import me.eccentric_nz.ores.ore.Ore;
+import me.eccentric_nz.ores.pipe.Pipe;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;

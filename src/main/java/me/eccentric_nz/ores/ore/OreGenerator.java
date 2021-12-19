@@ -1,4 +1,4 @@
-package me.eccentric_nz.ores;
+package me.eccentric_nz.ores.ore;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -38,7 +38,7 @@ public class OreGenerator {
                 Location location = new Location(world, x, y, z);
                 if (region.isInRegion(location) && Tag.STONE_ORE_REPLACEABLES.isTagged(region.getType(location))) {
                     Bukkit.getLogger().log(Level.INFO, "Generating " + ore + " ore at " + x + "," + y + "," + z);
-                    new OreFrame(ore, location).spawnOre();
+                    new OreFrame(ore, location, region).spawnOre();
                 }
                 x += random.nextInt(3) - 1;
                 y += random.nextInt(3) - 1;

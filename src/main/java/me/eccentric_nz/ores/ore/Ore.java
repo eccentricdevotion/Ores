@@ -1,4 +1,4 @@
-package me.eccentric_nz.ores;
+package me.eccentric_nz.ores.ore;
 
 import org.bukkit.Material;
 

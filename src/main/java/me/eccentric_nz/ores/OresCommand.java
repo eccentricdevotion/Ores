@@ -1,5 +1,8 @@
 package me.eccentric_nz.ores;
 
+import me.eccentric_nz.ores.Ores;
+import me.eccentric_nz.ores.ore.Ore;
+import me.eccentric_nz.ores.pipe.Pipe;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;

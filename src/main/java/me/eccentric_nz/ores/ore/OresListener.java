@@ -1,5 +1,6 @@
-package me.eccentric_nz.ores;
+package me.eccentric_nz.ores.ore;
 
+import me.eccentric_nz.ores.Ores;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.ItemFrame;
@@ -22,7 +23,7 @@ public class OresListener implements Listener {
     private final Ores plugin;
     private final List<Material> pickaxes = Arrays.asList(Material.DIAMOND_PICKAXE, Material.GOLDEN_PICKAXE, Material.IRON_PICKAXE, Material.STONE_PICKAXE, Material.NETHERITE_PICKAXE, Material.WOODEN_PICKAXE);
 
-    OresListener(Ores plugin) {
+    public OresListener(Ores plugin) {
         this.plugin = plugin;
     }
 

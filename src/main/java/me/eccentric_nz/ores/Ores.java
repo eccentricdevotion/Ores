@@ -1,5 +1,10 @@
 package me.eccentric_nz.ores;
 
+import me.eccentric_nz.ores.ore.OreSmelter;
+import me.eccentric_nz.ores.ore.OresListener;
+import me.eccentric_nz.ores.ore.OresWorldInit;
+import me.eccentric_nz.ores.pipe.PipeRecipes;
+import me.eccentric_nz.ores.pipe.PipesListener;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -54,6 +59,6 @@ public class Ores extends JavaPlugin {
         OresTabCompleter completer = new OresTabCompleter();
         getCommand("ore").setTabCompleter(completer);
         getCommand("pipe").setTabCompleter(completer);
-        new OresRecipes(this).addRecipes();
+        new PipeRecipes(this).addRecipes();
     }
 }

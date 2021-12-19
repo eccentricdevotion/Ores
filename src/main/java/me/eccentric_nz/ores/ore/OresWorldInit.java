@@ -1,5 +1,6 @@
-package me.eccentric_nz.ores;
+package me.eccentric_nz.ores.ore;
 
+import me.eccentric_nz.ores.Ores;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
