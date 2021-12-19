@@ -13,11 +13,16 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Ores extends JavaPlugin {
 
+    private static Ores plugin;
     private static NamespacedKey oreKey;
     private static NamespacedKey pipeKey;
     private static NamespacedKey collectorKey;
     private static NamespacedKey connectionKey;
     String pluginName;
+
+    public static Ores getPlugin() {
+        return plugin;
+    }
 
     public static NamespacedKey getOreKey() {
         return oreKey;
@@ -41,6 +46,7 @@ public class Ores extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        plugin = this;
         oreKey = new NamespacedKey(this, "custom_ore");
         pipeKey = new NamespacedKey(this, "lead_pipe");
         collectorKey = new NamespacedKey(this, "lead_collector");
