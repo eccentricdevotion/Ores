@@ -1,5 +1,6 @@
-package me.eccentric_nz.ores;
+package me.eccentric_nz.ores.pipe;
 
+import me.eccentric_nz.ores.Ores;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -18,7 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
-public class LeadPipeFrame {
+public class PipeFrame {
 
     private static final List<BlockFace> faces = Arrays.asList(BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH, BlockFace.EAST);
     private static Location location;
@@ -26,7 +27,7 @@ public class LeadPipeFrame {
     private static ItemStack right;
     private final Player player;
 
-    public LeadPipeFrame(Location l, Player player) {
+    public PipeFrame(Location l, Player player) {
         location = l;
         this.player = player;
         left = new ItemStack(Material.STRING);

@@ -1,5 +1,6 @@
-package me.eccentric_nz.ores;
+package me.eccentric_nz.ores.pipe;
 
+import me.eccentric_nz.ores.Ores;
 import org.bukkit.GameMode;
 import org.bukkit.Instrument;
 import org.bukkit.Material;
@@ -26,7 +27,7 @@ public class PipesListener implements Listener {
     private final NoteBlock collectorW;
     private final NoteBlock collectorN;
 
-    PipesListener(Ores plugin) {
+    public PipesListener(Ores plugin) {
         this.plugin = plugin;
         collectorE = (NoteBlock) this.plugin.getServer().createBlockData(Material.NOTE_BLOCK);
         collectorE.setInstrument(Instrument.BIT);
@@ -49,7 +50,7 @@ public class PipesListener implements Listener {
         if (isPipe(is)) {
             event.setCancelled(true);
             // place a pipe instead
-            new LeadPipeFrame(event.getBlock().getLocation(), player).spawnPipe();
+            new PipeFrame(event.getBlock().getLocation(), player).spawnPipe();
             if (player.getGameMode().equals(GameMode.SURVIVAL)) {
                 // reduce amount in hand
                 reduceInHand(player);

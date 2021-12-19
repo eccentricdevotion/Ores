@@ -12,7 +12,7 @@
  * https://discord.jeff-media.de
  */
 
-package me.eccentric_nz.ores;
+package me.eccentric_nz.ores.pipe;
 
 import org.bukkit.Chunk;
 import org.bukkit.NamespacedKey;
