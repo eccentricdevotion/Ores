@@ -8,16 +8,16 @@ import java.util.List;
 
 public class PipeLogic {
     private final World world;
-    private final PipeCoords pos;
+    private final PipeCoords coords;
     private final boolean isStraight;
     private final List<PipeCoords> connections = Lists.newArrayList();
     private PipeData data;
 
     public PipeLogic(World world, PipeCoords coords, PipeData data) {
         this.world = world;
-        pos = coords;
+        this.coords = coords;
         this.data = data;
-        PipeShape shape = (PipeShape) data.getShape();
+        PipeShape shape = data.getShape();
         isStraight = shape.isStraight();
         updateConnections(shape);
     }
@@ -26,64 +26,64 @@ public class PipeLogic {
         return connections;
     }
 
-    private void updateConnections(PipeShape blockpropertytrackposition) {
+    private void updateConnections(PipeShape shape) {
         connections.clear();
-        switch (blockpropertytrackposition) {
+        switch (shape) {
             case NORTH_SOUTH:
-                connections.add(pos.north());
-                connections.add(pos.south());
+                connections.add(coords.north());
+                connections.add(coords.south());
                 break;
             case EAST_WEST:
-                connections.add(pos.west());
-                connections.add(pos.east());
+                connections.add(coords.west());
+                connections.add(coords.east());
                 break;
             case ASCENDING_EAST:
-                connections.add(pos.west());
-                connections.add(pos.east().above());
+                connections.add(coords.west());
+                connections.add(coords.east().above());
                 break;
             case ASCENDING_WEST:
-                connections.add(pos.west().above());
-                connections.add(pos.east());
+                connections.add(coords.west().above());
+                connections.add(coords.east());
                 break;
             case ASCENDING_NORTH:
-                connections.add(pos.north().above());
-                connections.add(pos.south());
+                connections.add(coords.north().above());
+                connections.add(coords.south());
                 break;
             case ASCENDING_SOUTH:
-                connections.add(pos.north());
-                connections.add(pos.south().above());
+                connections.add(coords.north());
+                connections.add(coords.south().above());
                 break;
             case SOUTH_EAST:
-                connections.add(pos.east());
-                connections.add(pos.south());
+                connections.add(coords.east());
+                connections.add(coords.south());
                 break;
             case SOUTH_WEST:
-                connections.add(pos.west());
-                connections.add(pos.south());
+                connections.add(coords.west());
+                connections.add(coords.south());
                 break;
             case NORTH_WEST:
-                connections.add(pos.west());
-                connections.add(pos.north());
+                connections.add(coords.west());
+                connections.add(coords.north());
                 break;
             case NORTH_EAST:
-                connections.add(pos.east());
-                connections.add(pos.north());
+                connections.add(coords.east());
+                connections.add(coords.north());
         }
     }
 
     private void removeSoftConnections() {
         for (int i = 0; i < connections.size(); ++i) {
-            PipeLogic PipeLogic = getPipe((PipeCoords) connections.get(i));
-            if (PipeLogic != null && PipeLogic.connectsTo(this)) {
-                connections.set(i, PipeLogic.pos);
+            PipeLogic logic = getPipe((PipeCoords) connections.get(i));
+            if (logic != null && logic.connectsTo(this)) {
+                connections.set(i, logic.coords);
             } else {
                 connections.remove(i--);
             }
         }
     }
 
-    private boolean hasPipe(PipeCoords blockposition) {
-        return PipeData.isPipe(world, blockposition) || PipeData.isPipe(world, blockposition.above()) || PipeData.isPipe(world, blockposition.below());
+    private boolean hasPipe(PipeCoords coords) {
+        return PipeData.isPipe(world, coords) || PipeData.isPipe(world, coords.above()) || PipeData.isPipe(world, coords.below());
     }
 
     @Nullable
@@ -101,8 +101,8 @@ public class PipeLogic {
         }
     }
 
-    private boolean connectsTo(PipeLogic PipeLogic) {
-        return hasConnection(PipeLogic.pos);
+    private boolean connectsTo(PipeLogic logic) {
+        return hasConnection(logic.coords);
     }
 
     private boolean hasConnection(PipeCoords coords) {
@@ -130,54 +130,54 @@ public class PipeLogic {
 //        return i;
 //    }
 
-    private boolean canConnectTo(PipeLogic PipeLogic) {
-        return connectsTo(PipeLogic) || connections.size() != 2;
+    private boolean canConnectTo(PipeLogic logic) {
+        return connectsTo(logic) || connections.size() != 2;
     }
 
-    private void connectTo(PipeLogic PipeLogic) {
-        connections.add(PipeLogic.pos);
-        PipeCoords blockposition = pos.north();
-        PipeCoords blockposition1 = pos.south();
-        PipeCoords blockposition2 = pos.west();
-        PipeCoords blockposition3 = pos.east();
-        boolean flag = hasConnection(blockposition);
-        boolean flag1 = hasConnection(blockposition1);
-        boolean flag2 = hasConnection(blockposition2);
-        boolean flag3 = hasConnection(blockposition3);
+    private void connectTo(PipeLogic logic) {
+        connections.add(logic.coords);
+        PipeCoords north = coords.north();
+        PipeCoords south = coords.south();
+        PipeCoords west = coords.west();
+        PipeCoords east = coords.east();
+        boolean hasConnectionNorth = hasConnection(north);
+        boolean hasConnectionSouth = hasConnection(south);
+        boolean hasConnectionWest = hasConnection(west);
+        boolean hasConnectionEast = hasConnection(east);
         PipeShape shape = null;
-        if (flag || flag1) {
+        if (hasConnectionNorth || hasConnectionSouth) {
             shape = PipeShape.NORTH_SOUTH;
         }
-        if (flag2 || flag3) {
+        if (hasConnectionWest || hasConnectionEast) {
             shape = PipeShape.EAST_WEST;
         }
         if (!isStraight) {
-            if (flag1 && flag3 && !flag && !flag2) {
+            if (hasConnectionSouth && hasConnectionEast && !hasConnectionNorth && !hasConnectionWest) {
                 shape = PipeShape.SOUTH_EAST;
             }
-            if (flag1 && flag2 && !flag && !flag3) {
+            if (hasConnectionSouth && hasConnectionWest && !hasConnectionNorth && !hasConnectionEast) {
                 shape = PipeShape.SOUTH_WEST;
             }
-            if (flag && flag2 && !flag1 && !flag3) {
+            if (hasConnectionNorth && hasConnectionWest && !hasConnectionSouth && !hasConnectionEast) {
                 shape = PipeShape.NORTH_WEST;
             }
-            if (flag && flag3 && !flag1 && !flag2) {
+            if (hasConnectionNorth && hasConnectionEast && !hasConnectionSouth && !hasConnectionWest) {
                 shape = PipeShape.NORTH_EAST;
             }
         }
         if (shape == PipeShape.NORTH_SOUTH) {
-            if (PipeData.isPipe(world, blockposition.above())) {
+            if (PipeData.isPipe(world, north.above())) {
                 shape = PipeShape.ASCENDING_NORTH;
             }
-            if (PipeData.isPipe(world, blockposition1.above())) {
+            if (PipeData.isPipe(world, south.above())) {
                 shape = PipeShape.ASCENDING_SOUTH;
             }
         }
         if (shape == PipeShape.EAST_WEST) {
-            if (PipeData.isPipe(world, blockposition3.above())) {
+            if (PipeData.isPipe(world, east.above())) {
                 shape = PipeShape.ASCENDING_EAST;
             }
-            if (PipeData.isPipe(world, blockposition2.above())) {
+            if (PipeData.isPipe(world, west.above())) {
                 shape = PipeShape.ASCENDING_WEST;
             }
         }
@@ -185,11 +185,11 @@ public class PipeLogic {
             shape = PipeShape.NORTH_SOUTH;
         }
         data.setShape(shape);
-        PipeData.setFrame(world, pos, data);
+        PipeData.updateFrame(world, coords, data);
     }
 
-    private boolean hasNeighborRail(PipeCoords blockposition) {
-        PipeLogic PipeLogic = getPipe(blockposition);
+    private boolean hasNeighborRail(PipeCoords coords) {
+        PipeLogic PipeLogic = getPipe(coords);
         if (PipeLogic == null) {
             return false;
         } else {
@@ -198,77 +198,62 @@ public class PipeLogic {
         }
     }
 
-    public PipeLogic place(boolean flag, boolean flag1, PipeShape shape) {
-        PipeCoords north = pos.north();
-        PipeCoords south = pos.south();
-        PipeCoords west = pos.west();
-        PipeCoords east = pos.east();
-        boolean flag2 = hasNeighborRail(north);
-        boolean flag3 = hasNeighborRail(south);
-        boolean flag4 = hasNeighborRail(west);
-        boolean flag5 = hasNeighborRail(east);
+    public PipeLogic place(PipeShape shape) {
+        PipeCoords north = coords.north();
+        PipeCoords south = coords.south();
+        PipeCoords west = coords.west();
+        PipeCoords east = coords.east();
+        boolean hasConnectionNorth = hasNeighborRail(north);
+        boolean hasConnectionSouth = hasNeighborRail(south);
+        boolean hasConnectionWest = hasNeighborRail(west);
+        boolean hasConnectionEast = hasNeighborRail(east);
         PipeShape newShape = null;
-        boolean flag6 = flag2 || flag3;
-        boolean flag7 = flag4 || flag5;
-        if (flag6 && !flag7) {
+        boolean connectionNorthOrSouth = hasConnectionNorth || hasConnectionSouth;
+        boolean connectionWestOrEast = hasConnectionWest || hasConnectionEast;
+        if (connectionNorthOrSouth && !connectionWestOrEast) {
             newShape = PipeShape.NORTH_SOUTH;
         }
-        if (flag7 && !flag6) {
+        if (connectionWestOrEast && !connectionNorthOrSouth) {
             newShape = PipeShape.EAST_WEST;
         }
-        boolean flag8 = flag3 && flag5;
-        boolean flag9 = flag3 && flag4;
-        boolean flag10 = flag2 && flag5;
-        boolean flag11 = flag2 && flag4;
+        boolean southAndEast = hasConnectionSouth && hasConnectionEast;
+        boolean southAndWest = hasConnectionSouth && hasConnectionWest;
+        boolean northAndEast = hasConnectionNorth && hasConnectionEast;
+        boolean northAndWest = hasConnectionNorth && hasConnectionWest;
         if (!isStraight) {
-            if (flag8 && !flag2 && !flag4) {
+            if (southAndEast && !hasConnectionNorth && !hasConnectionWest) {
                 newShape = PipeShape.SOUTH_EAST;
             }
-            if (flag9 && !flag2 && !flag5) {
+            if (southAndWest && !hasConnectionNorth && !hasConnectionEast) {
                 newShape = PipeShape.SOUTH_WEST;
             }
-            if (flag11 && !flag3 && !flag5) {
+            if (northAndWest && !hasConnectionSouth && !hasConnectionEast) {
                 newShape = PipeShape.NORTH_WEST;
             }
-            if (flag10 && !flag3 && !flag4) {
+            if (northAndEast && !hasConnectionSouth && !hasConnectionWest) {
                 newShape = PipeShape.NORTH_EAST;
             }
         }
         if (newShape == null) {
-            if (flag6 && flag7) {
+            if (connectionNorthOrSouth && connectionWestOrEast) {
                 newShape = shape;
-            } else if (flag6) {
+            } else if (connectionNorthOrSouth) {
                 newShape = PipeShape.NORTH_SOUTH;
-            } else if (flag7) {
+            } else if (connectionWestOrEast) {
                 newShape = PipeShape.EAST_WEST;
             }
             if (!isStraight) {
-                if (flag) {
-                    if (flag8) {
-                        newShape = PipeShape.SOUTH_EAST;
-                    }
-                    if (flag9) {
-                        newShape = PipeShape.SOUTH_WEST;
-                    }
-                    if (flag10) {
-                        newShape = PipeShape.NORTH_EAST;
-                    }
-                    if (flag11) {
-                        newShape = PipeShape.NORTH_WEST;
-                    }
-                } else {
-                    if (flag11) {
-                        newShape = PipeShape.NORTH_WEST;
-                    }
-                    if (flag10) {
-                        newShape = PipeShape.NORTH_EAST;
-                    }
-                    if (flag9) {
-                        newShape = PipeShape.SOUTH_WEST;
-                    }
-                    if (flag8) {
-                        newShape = PipeShape.SOUTH_EAST;
-                    }
+                if (northAndWest) {
+                    newShape = PipeShape.NORTH_WEST;
+                }
+                if (northAndEast) {
+                    newShape = PipeShape.NORTH_EAST;
+                }
+                if (southAndWest) {
+                    newShape = PipeShape.SOUTH_WEST;
+                }
+                if (southAndEast) {
+                    newShape = PipeShape.SOUTH_EAST;
                 }
             }
         }
@@ -293,8 +278,8 @@ public class PipeLogic {
         }
         updateConnections(newShape);
         data.setShape(newShape);
-        if (flag1 || PipeData.get(world, pos) != data) {
-            PipeData.setFrame(world, pos, data);
+        if (PipeData.get(world, coords) != data) {
+            PipeData.updateFrame(world, coords, data);
             for (int i = 0; i < connections.size(); ++i) {
                 PipeLogic PipeLogic = getPipe((PipeCoords) connections.get(i));
                 if (PipeLogic != null) {

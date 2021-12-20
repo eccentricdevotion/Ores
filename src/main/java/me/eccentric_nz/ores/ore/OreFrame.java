@@ -12,6 +12,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.logging.Level;
+
 public class OreFrame {
 
     private final Ore ore;
@@ -30,6 +32,7 @@ public class OreFrame {
         // spawn in an item frame
         ItemFrame frame = (ItemFrame) region.spawnEntity(location, EntityType.ITEM_FRAME);
         Bukkit.getScheduler().scheduleSyncDelayedTask(Ores.getPlugin(), () -> {
+            Bukkit.getLogger().log(Level.INFO, "Scheduled frame set facing, item, visibility");
             frame.setFacingDirection(BlockFace.UP);
             // set frame's item
             ItemStack raw = new ItemStack(ore.getMaterial());

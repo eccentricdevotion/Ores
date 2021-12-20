@@ -23,25 +23,25 @@ public class PipeFrame {
 
     private static final List<BlockFace> faces = Arrays.asList(BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH, BlockFace.EAST);
     private static Location location;
-    private static ItemStack left;
-    private static ItemStack right;
+    private static ItemStack curved;
+    private static ItemStack ascending;
     private final Player player;
 
     public PipeFrame(Location l, Player player) {
         location = l;
         this.player = player;
-        left = new ItemStack(Material.STRING);
-        ItemMeta lim = left.getItemMeta();
-        lim.setDisplayName("");
-        lim.setCustomModelData(Pipe.LEFT.getCustomeModelData());
-        lim.getPersistentDataContainer().set(Ores.getPipeKey(), PersistentDataType.INTEGER, 1);
-        left.setItemMeta(lim);
-        right = new ItemStack(Material.STRING);
-        ItemMeta rim = right.getItemMeta();
-        rim.setDisplayName("");
-        rim.setCustomModelData(Pipe.RIGHT.getCustomeModelData());
-        rim.getPersistentDataContainer().set(Ores.getPipeKey(), PersistentDataType.INTEGER, 1);
-        right.setItemMeta(rim);
+        curved = new ItemStack(Material.STRING);
+        ItemMeta cim = curved.getItemMeta();
+        cim.setDisplayName("");
+        cim.setCustomModelData(Pipe.CURVED.getCustomeModelData());
+        cim.getPersistentDataContainer().set(Ores.getPipeKey(), PersistentDataType.INTEGER, 1);
+        curved.setItemMeta(cim);
+        ascending = new ItemStack(Material.STRING);
+        ItemMeta aim = ascending.getItemMeta();
+        aim.setDisplayName("");
+        aim.setCustomModelData(Pipe.ASCENDING.getCustomeModelData());
+        aim.getPersistentDataContainer().set(Ores.getPipeKey(), PersistentDataType.INTEGER, 1);
+        ascending.setItemMeta(aim);
     }
 
     public static BlockFace getFacing(Player player) {
@@ -81,12 +81,12 @@ public class PipeFrame {
                         // facing west
                         switch (face) {
                             case SOUTH -> {
-                                frame.setItem(left);
+                                frame.setItem(curved);
                                 frame.setRotation(Rotation.FLIPPED);
                                 return Rotation.NONE;
                             }
                             case NORTH -> {
-                                frame.setItem(right);
+                                frame.setItem(ascending);
                                 frame.setRotation(Rotation.NONE);
                                 return Rotation.FLIPPED;
                             }
@@ -99,12 +99,12 @@ public class PipeFrame {
                         // facing east
                         switch (face) {
                             case SOUTH -> {
-                                frame.setItem(right);
+                                frame.setItem(ascending);
                                 frame.setRotation(Rotation.FLIPPED);
                                 return Rotation.FLIPPED;
                             }
                             case NORTH -> {
-                                frame.setItem(left);
+                                frame.setItem(curved);
                                 frame.setRotation(Rotation.NONE);
                                 return Rotation.NONE;
                             }
@@ -117,12 +117,12 @@ public class PipeFrame {
                         // facing north
                         switch (face) {
                             case WEST -> {
-                                frame.setItem(left);
+                                frame.setItem(curved);
                                 frame.setRotation(Rotation.COUNTER_CLOCKWISE);
                                 return Rotation.CLOCKWISE;
                             }
                             case EAST -> {
-                                frame.setItem(right);
+                                frame.setItem(ascending);
                                 frame.setRotation(Rotation.CLOCKWISE);
                                 return Rotation.COUNTER_CLOCKWISE;
 
@@ -136,12 +136,12 @@ public class PipeFrame {
                         // facing south
                         switch (face) {
                             case WEST -> {
-                                frame.setItem(right);
+                                frame.setItem(ascending);
                                 frame.setRotation(Rotation.COUNTER_CLOCKWISE);
                                 return Rotation.COUNTER_CLOCKWISE;
                             }
                             case EAST -> {
-                                frame.setItem(left);
+                                frame.setItem(curved);
                                 frame.setRotation(Rotation.CLOCKWISE);
                                 return Rotation.CLOCKWISE;
 
@@ -186,7 +186,7 @@ public class PipeFrame {
         }
     }
 
-    private static boolean isPipe(ItemFrame frame) {
+    public static boolean isPipe(ItemFrame frame) {
         ItemStack is = frame.getItem();
         if (is == null) {
             return false;

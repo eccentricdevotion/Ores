@@ -1,5 +1,7 @@
 package me.eccentric_nz.ores.pipe;
 
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 
 public class PipeCoords {
@@ -12,6 +14,10 @@ public class PipeCoords {
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+
+    public static Location getLocation(World world, PipeCoords coords) {
+        return new Location(world, coords.getX(), coords.getY(), coords.getZ());
     }
 
     public PipeCoords above() {

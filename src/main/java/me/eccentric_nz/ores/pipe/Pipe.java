@@ -3,8 +3,8 @@ package me.eccentric_nz.ores.pipe;
 public enum Pipe {
 
     STRAIGHT(1001),
-    LEFT(1002),
-    RIGHT(1003);
+    CURVED(1002),
+    ASCENDING(1003);
 
     private final int customeModelData;
 
