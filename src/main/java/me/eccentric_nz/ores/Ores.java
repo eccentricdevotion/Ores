@@ -1,10 +1,8 @@
 package me.eccentric_nz.ores;
 
 import me.eccentric_nz.ores.ore.OreSmelter;
-import me.eccentric_nz.ores.ore.OresListener;
 import me.eccentric_nz.ores.ore.OresWorldInit;
 import me.eccentric_nz.ores.pipe.PipeRecipes;
-import me.eccentric_nz.ores.pipe.PipesListener;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -56,9 +54,8 @@ public class Ores extends JavaPlugin {
         PluginDescriptionFile pdfFile = getDescription();
         pluginName = ChatColor.GOLD + "[" + pdfFile.getName() + "]" + ChatColor.RESET + " ";
         pm.registerEvents(new OresWorldInit(this), this);
-        pm.registerEvents(new OresListener(this), this);
-        pm.registerEvents(new PipesListener(this), this);
         pm.registerEvents(new OreSmelter(this), this);
+        pm.registerEvents(new CommonListener(this), this);
         OresCommand command = new OresCommand(this);
         getCommand("ore").setExecutor(command);
         getCommand("pipe").setExecutor(command);

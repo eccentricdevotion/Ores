@@ -9,10 +9,6 @@ import java.util.Random;
 
 public class OreGenerator {
 
-//    public static final int CHUNK_WIDTH = 16;
-//    public static final int CHUNK_LENGTH = 16;
-//    public static final int CHUNK_HEIGHT = 384;
-
     private final OreType ore;
     private final World world;
     private final int veinSize;
@@ -35,8 +31,7 @@ public class OreGenerator {
             for (int j = 0; j < veinSize; j++) {
                 Location location = new Location(world, x, y, z);
                 if (region.isInRegion(location) && Tag.STONE_ORE_REPLACEABLES.isTagged(region.getType(location))) {
-//                    Bukkit.getLogger().log(Level.INFO, "Generating " + ore + " ore at " + x + "," + y + "," + z);
-                    new OreFrame(ore, location, region).spawnOre();
+                    region.setBlockData(location, ore.getData());
                 }
                 x += random.nextInt(3) - 1;
                 y += random.nextInt(3) - 1;
