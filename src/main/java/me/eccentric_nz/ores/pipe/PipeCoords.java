@@ -6,9 +6,9 @@ import org.bukkit.block.BlockFace;
 
 public class PipeCoords {
 
-    private int x;
-    private int y;
-    private int z;
+    private final int x;
+    private final int y;
+    private final int z;
 
     public PipeCoords(int x, int y, int z) {
         this.x = x;
@@ -17,7 +17,7 @@ public class PipeCoords {
     }
 
     public static Location getLocation(World world, PipeCoords coords) {
-        return new Location(world, coords.getX(), coords.getY(), coords.getZ());
+        return new Location(world, coords.getX() + 0.5d, coords.getY(), coords.getZ() + 0.5d);
     }
 
     public PipeCoords above() {

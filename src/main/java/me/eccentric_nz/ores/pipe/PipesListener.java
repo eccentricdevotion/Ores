@@ -6,6 +6,7 @@ import org.bukkit.Instrument;
 import org.bukkit.Material;
 import org.bukkit.Note;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.entity.Player;
@@ -50,7 +51,8 @@ public class PipesListener implements Listener {
         if (isPipe(is)) {
             event.setCancelled(true);
             // place a pipe instead
-            new PipeFrame(event.getBlock().getLocation(), player).spawnPipe();
+            PipeShape shape = (player.getFacing() == BlockFace.EAST || player.getFacing() == BlockFace.WEST) ? PipeShape.EAST_WEST : PipeShape.NORTH_SOUTH;
+            new PipeFrame(event.getBlock().getLocation()).spawnPipe(shape);
             if (player.getGameMode().equals(GameMode.SURVIVAL)) {
                 // reduce amount in hand
                 reduceInHand(player);
