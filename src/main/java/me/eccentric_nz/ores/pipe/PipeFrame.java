@@ -13,23 +13,9 @@ import org.bukkit.persistence.PersistentDataType;
 public class PipeFrame {
 
     private static Location location;
-    private static ItemStack curved;
-    private static ItemStack ascending;
 
     public PipeFrame(Location l) {
         location = l;
-        curved = new ItemStack(Material.STRING);
-        ItemMeta cim = curved.getItemMeta();
-        cim.setDisplayName("");
-        cim.setCustomModelData(Pipe.CURVED.getCustomeModelData());
-        cim.getPersistentDataContainer().set(Ores.getPipeKey(), PersistentDataType.INTEGER, 1);
-        curved.setItemMeta(cim);
-        ascending = new ItemStack(Material.STRING);
-        ItemMeta aim = ascending.getItemMeta();
-        aim.setDisplayName("");
-        aim.setCustomModelData(Pipe.ASCENDING.getCustomeModelData());
-        aim.getPersistentDataContainer().set(Ores.getPipeKey(), PersistentDataType.INTEGER, 1);
-        ascending.setItemMeta(aim);
     }
 
     public static boolean isPipe(ItemFrame frame) {

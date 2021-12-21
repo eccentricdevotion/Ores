@@ -1,8 +1,8 @@
 package me.eccentric_nz.ores;
 
 import com.google.common.collect.ImmutableList;
-import me.eccentric_nz.ores.ore.Ore;
-import me.eccentric_nz.ores.pipe.Pipe;
+import me.eccentric_nz.ores.ore.OreType;
+import me.eccentric_nz.ores.pipe.PipeShape;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -18,10 +18,10 @@ public class OresTabCompleter implements TabCompleter {
     private List<String> PIPE_SUBS = new ArrayList<>();
 
     public OresTabCompleter() {
-        for (Ore o : Ore.values()) {
+        for (OreType o : OreType.values()) {
             ORE_SUBS.add(o.toString());
         }
-        for (Pipe p : Pipe.values()) {
+        for (PipeShape p : PipeShape.values()) {
             PIPE_SUBS.add(p.toString());
         }
     }

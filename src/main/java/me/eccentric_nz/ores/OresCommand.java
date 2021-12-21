@@ -1,8 +1,7 @@
 package me.eccentric_nz.ores;
 
-import me.eccentric_nz.ores.Ores;
-import me.eccentric_nz.ores.ore.Ore;
-import me.eccentric_nz.ores.pipe.Pipe;
+import me.eccentric_nz.ores.ore.OreType;
+import me.eccentric_nz.ores.pipe.PipeShape;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -35,7 +34,7 @@ public class OresCommand implements CommandExecutor {
                 frame.setFacingDirection(BlockFace.UP);
                 if (cmd.getName().equalsIgnoreCase("ore")) {
                     try {
-                        Ore ore = Ore.valueOf(args[0].toUpperCase(Locale.ROOT));
+                        OreType ore = OreType.valueOf(args[0].toUpperCase(Locale.ROOT));
                         ItemStack raw = new ItemStack(ore.getMaterial());
                         ItemMeta im = raw.getItemMeta();
                         im.setDisplayName("");
@@ -51,16 +50,17 @@ public class OresCommand implements CommandExecutor {
                 }
                 if (cmd.getName().equalsIgnoreCase("pipe")) {
                     try {
-                        Pipe pipe = Pipe.valueOf(args[0].toUpperCase(Locale.ROOT));
+                        PipeShape shape = PipeShape.valueOf(args[0].toUpperCase(Locale.ROOT));
                         ItemStack lead = new ItemStack(Material.STRING);
                         ItemMeta im = lead.getItemMeta();
                         im.setDisplayName("");
-                        im.setCustomModelData(pipe.getCustomeModelData());
-                        // get player rotation
+                        im.setCustomModelData(shape.getCustomModelData());
                         im.getPersistentDataContainer().set(Ores.getPipeKey(), PersistentDataType.INTEGER, 1);
                         lead.setItemMeta(im);
                         frame.setItem(lead);
+                        frame.setRotation(shape.getRotation());
                         frame.setVisible(false);
+                        frame.getPersistentDataContainer().set(Ores.getPipeKey(), PersistentDataType.STRING, shape.toString());
                         return true;
                     } catch (IllegalArgumentException e) {
                         return false;
