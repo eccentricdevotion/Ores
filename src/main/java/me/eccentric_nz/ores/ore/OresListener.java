@@ -65,7 +65,7 @@ public class OresListener implements Listener {
             ItemStack is = frame.getItem();
             if (!isOre(is)) {
                 Bukkit.getLogger().log(Level.INFO, "Frame rotation = " + frame.getRotation());
-                return;
+//                return;
             }
             event.setCancelled(true);
         }
