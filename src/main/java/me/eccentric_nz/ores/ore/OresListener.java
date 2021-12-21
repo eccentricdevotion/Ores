@@ -48,7 +48,7 @@ public class OresListener implements Listener {
                 ItemStack clone = frame.getItem().clone();
                 clone.setAmount(3);
                 ItemMeta cim = clone.getItemMeta();
-                Ore ore = Ore.getByMaterial(is.getType());
+                OreType ore = OreType.getByMaterial(is.getType());
                 cim.setDisplayName(ore.getOreName());
                 clone.setItemMeta(cim);
                 // remove item frame

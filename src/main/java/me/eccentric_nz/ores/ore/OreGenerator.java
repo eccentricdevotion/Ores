@@ -13,13 +13,13 @@ public class OreGenerator {
 //    public static final int CHUNK_LENGTH = 16;
 //    public static final int CHUNK_HEIGHT = 384;
 
-    private final Ore ore;
+    private final OreType ore;
     private final World world;
     private final int veinSize;
     private final int tries;
     private final int maxHeight;
 
-    public OreGenerator(Ore ore, World world, int veinSize, int tries, int maxHeight) {
+    public OreGenerator(OreType ore, World world, int veinSize, int tries, int maxHeight) {
         this.ore = ore;
         this.world = world;
         this.veinSize = veinSize;

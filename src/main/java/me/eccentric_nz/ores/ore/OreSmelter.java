@@ -25,7 +25,7 @@ public class OreSmelter implements Listener {
             ItemMeta im = result.getItemMeta();
             im.setCustomModelData(1000);
             im.getPersistentDataContainer().set(Ores.getOreKey(), PersistentDataType.INTEGER, 1);
-            im.setDisplayName(Ore.getByMaterial(source.getType()).getIngotName());
+            im.setDisplayName(OreType.getByMaterial(source.getType()).getIngotName());
             result.setItemMeta(im);
         }
     }

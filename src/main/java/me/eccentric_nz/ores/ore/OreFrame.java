@@ -13,11 +13,11 @@ import org.bukkit.persistence.PersistentDataType;
 
 public class OreFrame {
 
-    private final Ore ore;
+    private final OreType ore;
     private final Location location;
     private final LimitedRegion region;
 
-    public OreFrame(Ore ore, Location location, LimitedRegion region) {
+    public OreFrame(OreType ore, Location location, LimitedRegion region) {
         this.ore = ore;
         this.location = location;
         this.region = region;
