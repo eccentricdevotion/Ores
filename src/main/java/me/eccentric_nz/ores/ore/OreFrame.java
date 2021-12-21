@@ -1,7 +1,6 @@
 package me.eccentric_nz.ores.ore;
 
 import me.eccentric_nz.ores.Ores;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -29,18 +28,17 @@ public class OreFrame {
         region.setType(location, Material.AIR);
         // spawn in an item frame
         ItemFrame frame = (ItemFrame) region.spawnEntity(location, EntityType.ITEM_FRAME);
-        Bukkit.getScheduler().scheduleSyncDelayedTask(Ores.getPlugin(), () -> {
-//            Bukkit.getLogger().log(Level.INFO, "Scheduled frame set facing, item, visibility");
-            frame.setFacingDirection(BlockFace.UP);
-            // set frame's item
-            ItemStack raw = new ItemStack(ore.getMaterial());
-            ItemMeta im = raw.getItemMeta();
-            im.setDisplayName("");
-            im.setCustomModelData(999);
-            im.getPersistentDataContainer().set(Ores.getOreKey(), PersistentDataType.INTEGER, 1);
-            raw.setItemMeta(im);
-            frame.setItem(raw);
-            frame.setVisible(false);
-        }, 20L);
+//        Bukkit.getScheduler().scheduleSyncDelayedTask(Ores.getPlugin(), () -> {
+        frame.setFacingDirection(BlockFace.UP);
+        // set frame's item
+        ItemStack raw = new ItemStack(ore.getMaterial());
+        ItemMeta im = raw.getItemMeta();
+        im.setDisplayName("");
+        im.setCustomModelData(999);
+        im.getPersistentDataContainer().set(Ores.getOreKey(), PersistentDataType.INTEGER, 1);
+        raw.setItemMeta(im);
+        frame.setItem(raw);
+        frame.setVisible(false);
+//        }, 1L);
     }
 }

@@ -1,12 +1,10 @@
 package me.eccentric_nz.ores.pipe;
 
 import com.google.common.collect.Lists;
-import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.logging.Level;
 
 public class PipeLogic {
     private final World world;
@@ -21,10 +19,6 @@ public class PipeLogic {
         this.shape = shape;
         isStraight = shape.isStraight();
         updateConnections(shape);
-    }
-
-    public List<PipeCoords> getConnections() {
-        return connections;
     }
 
     private void updateConnections(PipeShape shape) {
@@ -84,10 +78,6 @@ public class PipeLogic {
         }
     }
 
-    private boolean hasPipe(PipeCoords coords) {
-        return PipeShape.isPipe(world, coords) || PipeShape.isPipe(world, coords.above()) || PipeShape.isPipe(world, coords.below());
-    }
-
     @Nullable
     private PipeLogic getPipe(PipeCoords coords) {
         if (PipeShape.isPipe(world, coords)) {
@@ -121,7 +111,6 @@ public class PipeLogic {
     }
 
     private void connectTo(PipeLogic logic) {
-        Bukkit.getLogger().log(Level.INFO, "calling connectTo...");
         connections.add(logic.coords);
         PipeCoords north = coords.north();
         PipeCoords south = coords.south();
@@ -138,19 +127,17 @@ public class PipeLogic {
         if (hasConnectionWest || hasConnectionEast) {
             newShape = PipeShape.EAST_WEST;
         }
-        if (!isStraight) {
-            if (hasConnectionSouth && hasConnectionEast && !hasConnectionNorth && !hasConnectionWest) {
-                newShape = PipeShape.SOUTH_EAST;
-            }
-            if (hasConnectionSouth && hasConnectionWest && !hasConnectionNorth && !hasConnectionEast) {
-                newShape = PipeShape.SOUTH_WEST;
-            }
-            if (hasConnectionNorth && hasConnectionWest && !hasConnectionSouth && !hasConnectionEast) {
-                newShape = PipeShape.NORTH_WEST;
-            }
-            if (hasConnectionNorth && hasConnectionEast && !hasConnectionSouth && !hasConnectionWest) {
-                newShape = PipeShape.NORTH_EAST;
-            }
+        if (hasConnectionSouth && hasConnectionEast && !hasConnectionNorth && !hasConnectionWest) {
+            newShape = PipeShape.SOUTH_EAST;
+        }
+        if (hasConnectionSouth && hasConnectionWest && !hasConnectionNorth && !hasConnectionEast) {
+            newShape = PipeShape.SOUTH_WEST;
+        }
+        if (hasConnectionNorth && hasConnectionWest && !hasConnectionSouth && !hasConnectionEast) {
+            newShape = PipeShape.NORTH_WEST;
+        }
+        if (hasConnectionNorth && hasConnectionEast && !hasConnectionSouth && !hasConnectionWest) {
+            newShape = PipeShape.NORTH_EAST;
         }
         if (newShape == PipeShape.NORTH_SOUTH) {
             if (PipeShape.isPipe(world, north.above())) {
@@ -191,18 +178,12 @@ public class PipeLogic {
         PipeCoords west = coords.west();
         PipeCoords east = coords.east();
         boolean hasConnectionNorth = hasNeighborRail(north);
-        Bukkit.getLogger().log(Level.INFO, "has connection NORTH = " + hasConnectionNorth);
         boolean hasConnectionSouth = hasNeighborRail(south);
-        Bukkit.getLogger().log(Level.INFO, "has connection SOUTH = " + hasConnectionSouth);
         boolean hasConnectionWest = hasNeighborRail(west);
-        Bukkit.getLogger().log(Level.INFO, "has connection WEST = " + hasConnectionWest);
         boolean hasConnectionEast = hasNeighborRail(east);
-        Bukkit.getLogger().log(Level.INFO, "has connection EAST = " + hasConnectionEast);
         PipeShape newShape = null;
         boolean connectionNorthOrSouth = hasConnectionNorth || hasConnectionSouth;
-        Bukkit.getLogger().log(Level.INFO, "has connection NORTH or SOUTH = " + connectionNorthOrSouth);
         boolean connectionWestOrEast = hasConnectionWest || hasConnectionEast;
-        Bukkit.getLogger().log(Level.INFO, "has connection EAST or WEST = " + connectionWestOrEast);
         if (connectionNorthOrSouth && !connectionWestOrEast) {
             newShape = PipeShape.NORTH_SOUTH;
         }
@@ -210,15 +191,9 @@ public class PipeLogic {
             newShape = PipeShape.EAST_WEST;
         }
         boolean southAndEast = hasConnectionSouth && hasConnectionEast;
-        Bukkit.getLogger().log(Level.INFO, "has connection SOUTH_EAST = " + southAndEast);
         boolean southAndWest = hasConnectionSouth && hasConnectionWest;
-        Bukkit.getLogger().log(Level.INFO, "has connection SOUTH_WEST = " + southAndWest);
         boolean northAndEast = hasConnectionNorth && hasConnectionEast;
-        Bukkit.getLogger().log(Level.INFO, "has connection NORTH_EAST = " + northAndEast);
         boolean northAndWest = hasConnectionNorth && hasConnectionWest;
-        Bukkit.getLogger().log(Level.INFO, "has connection NORTH_WEST = " + northAndWest);
-//        if (!isStraight) {
-        Bukkit.getLogger().log(Level.INFO, "Not straight! 1");
         if (southAndEast && !hasConnectionNorth && !hasConnectionWest) {
             newShape = PipeShape.SOUTH_EAST;
         }
@@ -231,7 +206,6 @@ public class PipeLogic {
         if (northAndEast && !hasConnectionSouth && !hasConnectionWest) {
             newShape = PipeShape.NORTH_EAST;
         }
-//        }
         if (newShape == null) {
             if (connectionNorthOrSouth && connectionWestOrEast) {
                 newShape = shape;
@@ -276,16 +250,13 @@ public class PipeLogic {
         }
         updateConnections(newShape);
         this.shape = newShape;
-        Bukkit.getLogger().log(Level.INFO, "new shape = " + newShape);
-        if (PipeShape.get(world, coords) != this.shape) {
-            PipeShape.updateFrame(world, coords, this.shape);
-            for (PipeCoords connection : connections) {
-                PipeLogic logic = getPipe(connection);
-                if (logic != null) {
-                    logic.removeSoftConnections();
-                    if (logic.canConnectTo(this)) {
-                        logic.connectTo(this);
-                    }
+        PipeShape.updateFrame(world, coords, this.shape);
+        for (PipeCoords connection : connections) {
+            PipeLogic logic = getPipe(connection);
+            if (logic != null) {
+                logic.removeSoftConnections();
+                if (logic.canConnectTo(this)) {
+                    logic.connectTo(this);
                 }
             }
         }
