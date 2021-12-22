@@ -5,3 +5,28 @@ worlds:
   Earth: true
   Earth_nether: false
   Earth_the_end: false
+ores:
+  aluminium:
+    drops:
+      min: 1
+      max: 3
+    tries: 16
+    vein_size: 9
+    min_height: 0
+    max_height: 64
+  uranium:
+    drops:
+      min: 1
+      max: 2
+    tries: 10
+    vein_size: 9
+    min_height: -60
+    max_height: 32
+  lead:
+    drops:
+      min: 1
+      max: 3
+    tries: 20
+    vein_size: 9
+    min_height: -32
+    max_height: 64

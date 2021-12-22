@@ -13,13 +13,15 @@ public class OreGenerator {
     private final World world;
     private final int veinSize;
     private final int tries;
+    private final int minHeight;
     private final int maxHeight;
 
-    public OreGenerator(OreType ore, World world, int veinSize, int tries, int maxHeight) {
+    public OreGenerator(OreType ore, World world, int veinSize, int tries, int minHeight, int maxHeight) {
         this.ore = ore;
         this.world = world;
         this.veinSize = veinSize;
         this.tries = tries;
+        this.minHeight = Math.abs(minHeight);
         this.maxHeight = maxHeight;
     }
 
@@ -27,7 +29,7 @@ public class OreGenerator {
         for (int i = 0; i < tries; i++) {
             int x = cx * 16 + random.nextInt(16);
             int z = cz * 16 + random.nextInt(16);
-            int y = random.nextInt(maxHeight);
+            int y = random.nextInt(maxHeight + minHeight) - minHeight;
             for (int j = 0; j < veinSize; j++) {
                 Location location = new Location(world, x, y, z);
                 if (region.isInRegion(location) && Tag.STONE_ORE_REPLACEABLES.isTagged(region.getType(location))) {

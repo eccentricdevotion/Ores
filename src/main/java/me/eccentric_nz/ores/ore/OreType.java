@@ -1,9 +1,12 @@
 package me.eccentric_nz.ores.ore;
 
+import me.eccentric_nz.ores.Ores;
 import org.bukkit.Material;
 import org.bukkit.block.data.MultipleFacing;
 
 import java.util.HashMap;
+import java.util.Locale;
+import java.util.concurrent.ThreadLocalRandom;
 
 public enum OreType {
 
@@ -49,5 +52,12 @@ public enum OreType {
 
     public String getIngotName() {
         return ingotName;
+    }
+
+    public int getDropCount() {
+        String key = this.toString().toLowerCase(Locale.ROOT);
+        int min = Ores.getPlugin().getConfig().getInt("ores." + key + ".drops.min");
+        int max = Ores.getPlugin().getConfig().getInt("ores." + key + ".drops.max");
+        return ThreadLocalRandom.current().nextInt(max - min) + min;
     }
 }

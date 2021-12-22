@@ -19,7 +19,7 @@ public class OresWorldInit implements Listener {
     public void onWorldInit(WorldInitEvent event) {
         World world = event.getWorld();
         if (plugin.getConfig().getBoolean("worlds." + world.getName())) {
-            BlockPopulator blockPopulator = new OrePopulator(world);
+            BlockPopulator blockPopulator = new OrePopulator(plugin, world);
             world.getPopulators().add(blockPopulator);
         }
     }

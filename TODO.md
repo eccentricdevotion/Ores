@@ -11,5 +11,3 @@
     - final pipe +1 spawn water block
 3. Find use for aluminium - craft nuclear power source?
 4. Uranium -> powers and ingredient in, nuclear power source
-5. Make ore drops configurable amount
-6. Make ore spawn rates configurable
