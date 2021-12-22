@@ -1,5 +1,6 @@
 package me.eccentric_nz.ores;
 
+import me.eccentric_nz.ores.hud.HUDListener;
 import me.eccentric_nz.ores.ore.OreSmelter;
 import me.eccentric_nz.ores.ore.OresWorldInit;
 import me.eccentric_nz.ores.pipe.PipeRecipes;
@@ -9,13 +10,17 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 public class Ores extends JavaPlugin {
 
+    private static final List<UUID> hudPlayers = new ArrayList<>();
     private static Ores plugin;
     private static NamespacedKey oreKey;
     private static NamespacedKey pipeKey;
     private static NamespacedKey collectorKey;
-    private static NamespacedKey connectionKey;
     String pluginName;
 
     public static Ores getPlugin() {
@@ -34,8 +39,8 @@ public class Ores extends JavaPlugin {
         return collectorKey;
     }
 
-    public static NamespacedKey getConnectionKey() {
-        return connectionKey;
+    public static List<UUID> getHudPlayers() {
+        return hudPlayers;
     }
 
     @Override
@@ -48,7 +53,6 @@ public class Ores extends JavaPlugin {
         oreKey = new NamespacedKey(this, "custom_ore");
         pipeKey = new NamespacedKey(this, "lead_pipe");
         collectorKey = new NamespacedKey(this, "lead_collector");
-        connectionKey = new NamespacedKey(this, "connection");
         saveDefaultConfig();
         PluginManager pm = getServer().getPluginManager();
         PluginDescriptionFile pdfFile = getDescription();
@@ -56,7 +60,9 @@ public class Ores extends JavaPlugin {
         pm.registerEvents(new OresWorldInit(this), this);
         pm.registerEvents(new OreSmelter(this), this);
         pm.registerEvents(new CommonListener(this), this);
-        OresCommand command = new OresCommand(this);
+        pm.registerEvents(new HUDListener(), this);
+        OresCommand command = new OresCommand();
+        getCommand("hud").setExecutor(command);
         getCommand("ore").setExecutor(command);
         getCommand("pipe").setExecutor(command);
         OresTabCompleter completer = new OresTabCompleter();

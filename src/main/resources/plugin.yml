@@ -8,10 +8,18 @@ api-version: 1.18
 website: http://tardisjenkins.duckdns.org:8080/job/ores
 dev-url: http://tardisjenkins.duckdns.org:8080/job/ores
 permissions:
+  ores.hud:
+    description: Permission to use the /hud command.
+    default: op
   ores.use:
-    description: Permission to use the /ores command.
+    description: Permission to use the /ore and /pipe commands.
     default: op
 commands:
+  hud:
+    description: Turn on the target block HUD.
+    usage: /<command>
+    permission: ores.hud
+    permission-message: You don't have the permission <permission> to use this command
   ore:
     description: Spawn in an ore where the player is looking.
     usage: /<command> [ore type]
@@ -19,6 +27,6 @@ commands:
     permission-message: You don't have the permission <permission> to use this command
   pipe:
     description: Spawn in a pipe where the player is looking or set the pipe type and rotation.
-    usage: /<command> [type] [rotation]
+    usage: /<command> [shape]
     permission: ores.use
     permission-message: You don't have the permission <permission> to use this command
