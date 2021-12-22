@@ -10,6 +10,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.MultipleFacing;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
@@ -90,43 +91,50 @@ public class CommonListener implements Listener {
         if (!block.getType().equals(Material.BROWN_MUSHROOM_BLOCK)) {
             return;
         }
-        CustomBlockData customBlockData = new CustomBlockData(block, plugin);
-        if (!customBlockData.isEmpty()) {
-            ItemStack is = null;
-            if (customBlockData.has(Ores.getPipeKey(), PersistentDataType.INTEGER)) {
+        MultipleFacing data = (MultipleFacing) block.getBlockData();
+        // must use pickaxe
+        ItemStack pick = event.getPlayer().getInventory().getItemInMainHand();
+        boolean pickaxe = pick != null && isPickAxe(pick.getType());
+        ItemStack is = null;
+        if (OreData.isCollectorMushroom(data)) {
+            event.setCancelled(true);
+            is = new ItemStack(Material.BROWN_MUSHROOM_BLOCK);
+            ItemMeta im = is.getItemMeta();
+            im.setCustomModelData(1003);
+            im.getPersistentDataContainer().set(Ores.getPipeKey(), PersistentDataType.INTEGER, 1);
+            im.setDisplayName("Lead Collector");
+            is.setItemMeta(im);
+        }
+        if (OreData.isOreMushroom(data)) {
+            event.setCancelled(true);
+            OreType ore;
+            if (data.matches(OreData.bauxiteMushroom)) {
+                ore = OreType.ALUMINIUM;
+            } else if (data.matches(OreData.uraniumMushroom)) {
+                ore = OreType.URANIUM;
+            } else { // leadMushroom
+                ore = OreType.LEAD;
+            }
+            // check for silk touch pickaxe
+            ItemMeta im;
+            if (hasSilkTouch(pick)) {
                 is = new ItemStack(Material.BROWN_MUSHROOM_BLOCK);
-                ItemMeta im = is.getItemMeta();
-                im.setCustomModelData(1003);
-                im.getPersistentDataContainer().set(Ores.getPipeKey(), PersistentDataType.INTEGER, 1);
-                im.setDisplayName("Lead Collector");
-                is.setItemMeta(im);
+                im = is.getItemMeta();
+                im.setCustomModelData(1000 + ore.ordinal());
+            } else {
+                is = new ItemStack(ore.getMaterial());
+                im = is.getItemMeta();
+                im.setCustomModelData(1000);
             }
-            if (customBlockData.has(Ores.getOreKey(), PersistentDataType.INTEGER)) {
-                // must use pickaxe
-                ItemStack pick = event.getPlayer().getInventory().getItemInMainHand();
-                boolean pickaxe = pick != null && isPickAxe(pick.getType());
-                // get the custom block data integer
-                int cmd = customBlockData.get(Ores.getOreKey(), PersistentDataType.INTEGER);
-                OreType ore = OreType.values()[cmd];
-                // check for silk touch pickaxe
-                ItemMeta im;
-                if (hasSilkTouch(pick)) {
-                    is = new ItemStack(Material.BROWN_MUSHROOM_BLOCK);
-                    im = is.getItemMeta();
-                    im.setCustomModelData(1000 + cmd);
-                } else {
-                    is = new ItemStack(ore.getMaterial());
-                    im = is.getItemMeta();
-                    im.setCustomModelData(1000);
-                }
-                im.getPersistentDataContainer().set(Ores.getOreKey(), PersistentDataType.INTEGER, cmd);
-                im.setDisplayName(ore.getOreName());
-                is.setItemMeta(im);
-            }
-            if (is != null) {
-                // set block to air
-                block.setType(Material.AIR);
-                // drop custom brown mushroom block
+            im.getPersistentDataContainer().set(Ores.getOreKey(), PersistentDataType.INTEGER, ore.ordinal());
+            im.setDisplayName(ore.getOreName());
+            is.setItemMeta(im);
+        }
+        if (is != null) {
+            // set block to air
+            block.setType(Material.AIR);
+            if (pickaxe) {
+                // drop custom brown mushroom block / raw_ore
                 block.getWorld().dropItemNaturally(block.getLocation(), is);
             }
         }
