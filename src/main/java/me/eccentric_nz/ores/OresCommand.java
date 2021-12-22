@@ -1,10 +1,12 @@
 package me.eccentric_nz.ores;
 
+import me.eccentric_nz.ores.ore.OreData;
 import me.eccentric_nz.ores.ore.OreType;
 import me.eccentric_nz.ores.pipe.PipeShape;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.MultipleFacing;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -30,19 +32,23 @@ public class OresCommand implements CommandExecutor {
         if (sender instanceof Player player) {
             if (cmd.getName().equalsIgnoreCase("ore") || cmd.getName().equalsIgnoreCase("pipe")) {
                 Location location = player.getTargetBlock(null, 16).getLocation().add(0, 1, 0);
-                ItemFrame frame = (ItemFrame) location.getWorld().spawnEntity(location, EntityType.ITEM_FRAME);
-                frame.setFacingDirection(BlockFace.UP);
+
                 if (cmd.getName().equalsIgnoreCase("ore")) {
                     try {
                         OreType ore = OreType.valueOf(args[0].toUpperCase(Locale.ROOT));
-                        ItemStack raw = new ItemStack(ore.getMaterial());
-                        ItemMeta im = raw.getItemMeta();
-                        im.setDisplayName("");
-                        im.setCustomModelData(999);
-                        im.getPersistentDataContainer().set(Ores.getOreKey(), PersistentDataType.INTEGER, 1);
-                        raw.setItemMeta(im);
-                        frame.setItem(raw);
-                        frame.setVisible(false);
+                        MultipleFacing mushroom;
+                        switch (ore) {
+                            case ALUMINIUM -> {
+                                mushroom = OreData.bauxiteMushroom;
+                            }
+                            case URANIUM -> {
+                                mushroom = OreData.uraniumMushroom;
+                            }
+                            default -> {
+                                mushroom = OreData.leadMushroom;
+                            }
+                        }
+                        location.getBlock().setBlockData(mushroom);
                         return true;
                     } catch (IllegalArgumentException e) {
                         return false;
@@ -50,6 +56,8 @@ public class OresCommand implements CommandExecutor {
                 }
                 if (cmd.getName().equalsIgnoreCase("pipe")) {
                     try {
+                        ItemFrame frame = (ItemFrame) location.getWorld().spawnEntity(location, EntityType.ITEM_FRAME);
+                        frame.setFacingDirection(BlockFace.UP);
                         PipeShape shape = PipeShape.valueOf(args[0].toUpperCase(Locale.ROOT));
                         ItemStack lead = new ItemStack(Material.STRING);
                         ItemMeta im = lead.getItemMeta();
