@@ -123,6 +123,7 @@ public class CommonListener implements Listener {
                 im.setCustomModelData(1000 + ore.ordinal());
             } else {
                 is = new ItemStack(ore.getMaterial());
+                is.setAmount(3);
                 im = is.getItemMeta();
                 im.setCustomModelData(1000);
             }
