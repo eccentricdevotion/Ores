@@ -1,5 +1,7 @@
 package me.eccentric_nz.ores;
 
+import me.eccentric_nz.ores.ore.OreBroadcast;
+import me.eccentric_nz.ores.ore.OreCounter;
 import me.eccentric_nz.ores.ore.OreData;
 import me.eccentric_nz.ores.ore.OreType;
 import me.eccentric_nz.ores.pipe.CustomBlockData;
@@ -7,6 +9,7 @@ import me.eccentric_nz.ores.pipe.PipeFrame;
 import me.eccentric_nz.ores.pipe.PipeShape;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -29,9 +32,13 @@ import java.util.logging.Level;
 public class CommonListener implements Listener {
 
     private final Ores plugin;
+    private final OreCounter counter;
+    private final OreBroadcast oreBroadcast;
 
     public CommonListener(Ores plugin) {
         this.plugin = plugin;
+        counter = new OreCounter();
+        oreBroadcast = new OreBroadcast();
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -77,7 +84,7 @@ public class CommonListener implements Listener {
         if (isOre(is)) {
             ItemMeta im = is.getItemMeta();
             int cmd = im.getCustomModelData();
-            OreType ore = OreType.values()[cmd];
+            OreType ore = OreType.values()[cmd - 1000];
             event.getBlockPlaced().setBlockData(ore.getData());
             // set persistent data
             CustomBlockData customBlockData = new CustomBlockData(event.getBlockPlaced(), plugin);
@@ -106,6 +113,16 @@ public class CommonListener implements Listener {
             is.setItemMeta(im);
         }
         if (OreData.isOreMushroom(data)) {
+            Location loc = event.getBlock().getLocation();
+            boolean announce = true;
+            if (!counter.isAnnounceable(loc)) {
+                counter.removeAnnouncedOrPlacedBlock(loc);
+                announce = false;
+            }
+            if (announce) {
+                int count = counter.getTotalBlocks(event.getBlock());
+                oreBroadcast.handleBroadcast(data, count, event.getPlayer());
+            }
             event.setCancelled(true);
             OreType ore;
             if (data.matches(OreData.bauxiteMushroom)) {
