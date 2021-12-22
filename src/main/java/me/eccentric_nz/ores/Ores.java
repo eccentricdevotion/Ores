@@ -10,13 +10,12 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.UUID;
 
 public class Ores extends JavaPlugin {
 
-    private static final List<UUID> hudPlayers = new ArrayList<>();
+    private static final HashMap<UUID, String> hudPlayers = new HashMap<>();
     private static Ores plugin;
     private static NamespacedKey oreKey;
     private static NamespacedKey pipeKey;
@@ -39,7 +38,7 @@ public class Ores extends JavaPlugin {
         return collectorKey;
     }
 
-    public static List<UUID> getHudPlayers() {
+    public static HashMap<UUID, String> getHudPlayers() {
         return hudPlayers;
     }
 
@@ -66,6 +65,7 @@ public class Ores extends JavaPlugin {
         getCommand("ore").setExecutor(command);
         getCommand("pipe").setExecutor(command);
         OresTabCompleter completer = new OresTabCompleter();
+        getCommand("hud").setTabCompleter(completer);
         getCommand("ore").setTabCompleter(completer);
         getCommand("pipe").setTabCompleter(completer);
         new PipeRecipes(this).addRecipes();

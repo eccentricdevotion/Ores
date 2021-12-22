@@ -4,7 +4,6 @@ import me.eccentric_nz.ores.Ores;
 import me.eccentric_nz.ores.ore.OreData;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.MultipleFacing;
 import org.bukkit.entity.Player;
@@ -30,9 +29,11 @@ public class HUDListener implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
-        if (Ores.getHudPlayers().contains(player.getUniqueId())) {
+        if (Ores.getHudPlayers().containsKey(player.getUniqueId())) {
+            String showVanilla = Ores.getHudPlayers().get(player.getUniqueId());
             Block block = player.getTargetBlock(null, 6);
             String material = capitalise(block.getType().toString());
+            boolean show = false;
             if (material.equals("Brown Mushroom Block")) {
                 MultipleFacing mushroom = (MultipleFacing) block.getBlockData();
                 if (mushroom.matches(OreData.bauxiteMushroom)) {
@@ -42,10 +43,11 @@ public class HUDListener implements Listener {
                 } else if (mushroom.matches(OreData.leadMushroom)) {
                     material = "Lead Ore";
                 }
+                show = true;
             }
-            String display = ChatColor.translateAlternateColorCodes('&', "&6T&7%TARGET_BLOCK%"
-                    .replace("%TARGET_BLOCK%", material));
-            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(display));
+            if (show || showVanilla.equals("vanilla")) {
+                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(material));
+            }
         }
     }
 }

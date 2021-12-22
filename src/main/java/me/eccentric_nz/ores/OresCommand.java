@@ -29,11 +29,12 @@ public class OresCommand implements CommandExecutor {
                 UUID uuid = player.getUniqueId();
                 // toggle HUD
                 if (player.hasPermission("ores.hud")) {
-                    if (Ores.getHudPlayers().contains(uuid)) {
+                    if (Ores.getHudPlayers().containsKey(uuid)) {
                         Ores.getHudPlayers().remove(uuid);
                         player.sendMessage("HUD disabled");
                     } else {
-                        Ores.getHudPlayers().add(uuid);
+                        String which = args.length > 0 ? args[0].toLowerCase(Locale.ROOT) : "custom";
+                        Ores.getHudPlayers().put(uuid, which);
                         player.sendMessage("HUD enabled");
                     }
                 } else {

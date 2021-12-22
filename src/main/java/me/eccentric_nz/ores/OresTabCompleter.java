@@ -9,13 +9,15 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.util.StringUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 public class OresTabCompleter implements TabCompleter {
 
-    private List<String> ORE_SUBS = new ArrayList<>();
-    private List<String> PIPE_SUBS = new ArrayList<>();
+    private final List<String> HUD_SUBS = Arrays.asList("custom", "vanilla");
+    private final List<String> ORE_SUBS = new ArrayList<>();
+    private final List<String> PIPE_SUBS = new ArrayList<>();
 
     public OresTabCompleter() {
         for (OreType o : OreType.values()) {
@@ -30,6 +32,9 @@ public class OresTabCompleter implements TabCompleter {
     public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
         String lastArg = args[args.length - 1];
         if (args.length == 1) {
+            if (cmd.getName().equalsIgnoreCase("hud")) {
+                return partial(lastArg, HUD_SUBS);
+            }
             if (cmd.getName().equalsIgnoreCase("ore")) {
                 return partial(lastArg, ORE_SUBS);
             }
