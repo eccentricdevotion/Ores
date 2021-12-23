@@ -15,6 +15,7 @@ import java.util.List;
 
 public class OresTabCompleter implements TabCompleter {
 
+    private final List<String> GIVE_SUBS = Arrays.asList("bauxite", "uranium_ore", "lead_ore", "raw_bauxite", "raw_uranium", "aluminium_ingot", "lead_glance", "lead_ingot", "uranium_pellet", "nuclear_generator", "lead_pipe", "lead_collector");
     private final List<String> HUD_SUBS = Arrays.asList("custom", "vanilla");
     private final List<String> ORE_SUBS = new ArrayList<>();
     private final List<String> PIPE_SUBS = new ArrayList<>();
@@ -32,6 +33,9 @@ public class OresTabCompleter implements TabCompleter {
     public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
         String lastArg = args[args.length - 1];
         if (args.length == 1) {
+            if (cmd.getName().equalsIgnoreCase("ogive")) {
+                return partial(lastArg, GIVE_SUBS);
+            }
             if (cmd.getName().equalsIgnoreCase("hud")) {
                 return partial(lastArg, HUD_SUBS);
             }

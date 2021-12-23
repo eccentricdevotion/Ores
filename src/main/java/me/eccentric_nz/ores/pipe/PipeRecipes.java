@@ -40,7 +40,7 @@ public class PipeRecipes {
         ItemMeta collectorItemMeta = collector.getItemMeta();
         collectorItemMeta.setDisplayName("Lead Collector");
         collectorItemMeta.setCustomModelData(1000);
-        collectorItemMeta.getPersistentDataContainer().set(Ores.getPipeKey(), PersistentDataType.INTEGER, 1);
+        collectorItemMeta.getPersistentDataContainer().set(Ores.getCollectorKey(), PersistentDataType.INTEGER, 1);
         collector.setItemMeta(collectorItemMeta);
         ShapedRecipe collectorRecipe = new ShapedRecipe(Ores.getCollectorKey(), collector);
         collectorRecipe.shape("III", "IBI", "III");

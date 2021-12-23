@@ -25,8 +25,16 @@ public class OresCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (sender instanceof Player player) {
+            UUID uuid = player.getUniqueId();
+            if (cmd.getName().equalsIgnoreCase("ogive")) {
+                if (args.length < 1) {
+                    player.sendMessage("Too few command arguments!");
+                    return false;
+                }
+                OresGiver.giveItem(args[0].toLowerCase(Locale.ROOT), player);
+                return true;
+            }
             if (cmd.getName().equalsIgnoreCase("hud")) {
-                UUID uuid = player.getUniqueId();
                 // toggle HUD
                 if (player.hasPermission("ores.hud")) {
                     if (Ores.getHudPlayers().containsKey(uuid)) {

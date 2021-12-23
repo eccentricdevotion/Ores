@@ -6,7 +6,6 @@ load: STARTUP
 version: 1.0.0
 api-version: 1.18
 website: http://tardisjenkins.duckdns.org:8080/job/ores
-dev-url: http://tardisjenkins.duckdns.org:8080/job/ores
 permissions:
   ores.announce:
     description: Allow players to receive a message with the number of ores when starting to mine an ore vein.
@@ -18,6 +17,12 @@ permissions:
     description: Permission to use the /ore and /pipe commands.
     default: op
 commands:
+  ogive:
+    description: Give Ore items.
+    aliases: [ og ]
+    usage: /<command> [item]
+    permission: ores.use
+    permission-message: You don't have the permission <permission> to use this command
   hud:
     description: Turn on the target block HUD.
     usage: /<command> [custom|vanilla]
