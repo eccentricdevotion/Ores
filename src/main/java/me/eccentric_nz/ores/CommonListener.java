@@ -4,9 +4,7 @@ import me.eccentric_nz.ores.ore.OreBroadcast;
 import me.eccentric_nz.ores.ore.OreCounter;
 import me.eccentric_nz.ores.ore.OreData;
 import me.eccentric_nz.ores.ore.OreType;
-import me.eccentric_nz.ores.pipe.CustomBlockData;
-import me.eccentric_nz.ores.pipe.PipeFrame;
-import me.eccentric_nz.ores.pipe.PipeShape;
+import me.eccentric_nz.ores.pipe.*;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -163,7 +161,12 @@ public class CommonListener implements Listener {
         if (event.getRightClicked() instanceof ItemFrame frame) {
             ItemStack is = frame.getItem();
             if (isPipe(is)) {
-                Bukkit.getLogger().log(Level.INFO, "Frame rotation = " + frame.getRotation());
+                PipeShape shape = PipeShape.get(frame.getWorld(), new PipeCoords(frame.getLocation().getBlockX(), frame.getLocation().getBlockY(), frame.getLocation().getBlockZ()));
+                if (shape != null) {
+                    Location end = new PipePath().getExit(frame.getLocation(), shape, event.getPlayer().getFacing());
+                    Bukkit.getLogger().log(Level.INFO, "Pipe shape = " + shape + ", end location: " + end);
+                    end.getBlock().setType(Material.LIGHT_BLUE_CARPET);
+                }
                 event.setCancelled(true);
             }
         }
