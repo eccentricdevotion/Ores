@@ -43,6 +43,10 @@ public class OresCommand implements CommandExecutor {
                 return true;
             }
             if (cmd.getName().equalsIgnoreCase("ore") || cmd.getName().equalsIgnoreCase("pipe")) {
+                if (args.length < 1) {
+                    player.sendMessage("Too few command arguments!");
+                    return false;
+                }
                 if (player.hasPermission("ores.hud")) {
                     Location location = player.getTargetBlock(null, 16).getLocation().add(0, 1, 0);
                     if (cmd.getName().equalsIgnoreCase("ore")) {
