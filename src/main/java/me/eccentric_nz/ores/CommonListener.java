@@ -23,6 +23,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -36,7 +37,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
 
 public class CommonListener implements Listener {
 
@@ -129,7 +129,7 @@ public class CommonListener implements Listener {
             is = new ItemStack(Material.BROWN_MUSHROOM_BLOCK);
             ItemMeta im = is.getItemMeta();
             im.setCustomModelData(1003);
-            im.getPersistentDataContainer().set(Ores.getPipeKey(), PersistentDataType.INTEGER, 1);
+            im.getPersistentDataContainer().set(Ores.getCollectorKey(), PersistentDataType.INTEGER, 1);
             im.setDisplayName("Lead Collector");
             is.setItemMeta(im);
         }
@@ -180,6 +180,26 @@ public class CommonListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
+    public void onHitEntity(EntityDamageByEntityEvent event) {
+        if (event.getEntity() instanceof ItemFrame frame && event.getDamager() instanceof Player) {
+            ItemStack is = frame.getItem();
+            if (isPipe(is)) {
+                event.setCancelled(true);
+                // drop lead pipe
+                ItemStack pipe = new ItemStack(Material.STRING);
+                ItemMeta leadItemMeta = pipe.getItemMeta();
+                leadItemMeta.setDisplayName("Lead Pipe");
+                leadItemMeta.setCustomModelData(1001);
+                leadItemMeta.getPersistentDataContainer().set(Ores.getPipeKey(), PersistentDataType.INTEGER, 1);
+                pipe.setItemMeta(leadItemMeta);
+                frame.getWorld().dropItemNaturally(frame.getLocation(), pipe);
+                // remove item frame
+                plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, frame::remove, 1L);
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onInteractEntity(PlayerInteractEntityEvent event) {
         if (event.getRightClicked() instanceof ItemFrame frame) {
             ItemStack is = frame.getItem();
@@ -187,7 +207,7 @@ public class CommonListener implements Listener {
                 PipeShape shape = PipeShape.get(frame.getWorld(), new PipeCoords(frame.getLocation().getBlockX(), frame.getLocation().getBlockY(), frame.getLocation().getBlockZ()));
                 if (shape != null) {
                     Location end = new PipePath().getExit(frame.getLocation(), shape, event.getPlayer().getFacing());
-                    Bukkit.getLogger().log(Level.INFO, "Pipe shape = " + shape + ", end location: " + end);
+//                    Bukkit.getLogger().log(Level.INFO, "Pipe shape = " + shape + ", end location: " + end);
                     end.getBlock().setType(Material.LIGHT_BLUE_CARPET);
                 }
                 event.setCancelled(true);
@@ -295,7 +315,7 @@ public class CommonListener implements Listener {
         if (!is.hasItemMeta()) {
             return false;
         }
-        if (!is.getItemMeta().getPersistentDataContainer().has(Ores.getPipeKey(), PersistentDataType.INTEGER)) {
+        if (!is.getItemMeta().getPersistentDataContainer().has(Ores.getCollectorKey(), PersistentDataType.INTEGER)) {
             return false;
         }
         return is.getItemMeta().hasCustomModelData();
