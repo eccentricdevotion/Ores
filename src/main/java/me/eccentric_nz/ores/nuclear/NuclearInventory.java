@@ -21,6 +21,12 @@ public class NuclearInventory {
         pellet.setItemMeta(pelletItemMeta);
     }
 
+    public static int getAmount(Block block) {
+        // get persistent data
+        CustomBlockData customBlockData = new CustomBlockData(block, Ores.getPlugin());
+        return customBlockData.get(Ores.getGeneratorKey(), PersistentDataType.INTEGER);
+    }
+
     public static void setAmount(Block block, int amount) {
         // set persistent data
         CustomBlockData customBlockData = new CustomBlockData(block, Ores.getPlugin());

@@ -2,6 +2,7 @@ package me.eccentric_nz.ores;
 
 import me.eccentric_nz.ores.hud.HUDListener;
 import me.eccentric_nz.ores.nuclear.NuclearRecipe;
+import me.eccentric_nz.ores.nuclear.NuclearStorage;
 import me.eccentric_nz.ores.ore.OreSmelter;
 import me.eccentric_nz.ores.ore.OresWorldInit;
 import me.eccentric_nz.ores.pipe.PipeRecipes;
@@ -11,8 +12,10 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class Ores extends JavaPlugin {
 
@@ -23,6 +26,7 @@ public class Ores extends JavaPlugin {
     private static NamespacedKey collectorKey;
     private static NamespacedKey generatorKey;
     String pluginName;
+    private NuclearStorage service;
 
     public static Ores getPlugin() {
         return plugin;
@@ -60,6 +64,15 @@ public class Ores extends JavaPlugin {
         collectorKey = new NamespacedKey(this, "lead_collector");
         generatorKey = new NamespacedKey(this, "nuclear_generator");
         saveDefaultConfig();
+        service = NuclearStorage.getInstance();
+        try {
+            String path = getDataFolder() + File.separator + "nuclear.db";
+            service.setConnection(path);
+            service.createTable();
+        } catch (Exception e) {
+            getLogger().log(Level.WARNING, "Connection and Tables Error: " + e);
+        }
+        NuclearStorage.loadBlocks();
         PluginManager pm = getServer().getPluginManager();
         PluginDescriptionFile pdfFile = getDescription();
         pluginName = ChatColor.GOLD + "[" + pdfFile.getName() + "]" + ChatColor.RESET + " ";
@@ -68,10 +81,12 @@ public class Ores extends JavaPlugin {
         pm.registerEvents(new CommonListener(this), this);
         pm.registerEvents(new HUDListener(), this);
         OresCommand command = new OresCommand();
+        getCommand("ogive").setExecutor(command);
         getCommand("hud").setExecutor(command);
         getCommand("ore").setExecutor(command);
         getCommand("pipe").setExecutor(command);
         OresTabCompleter completer = new OresTabCompleter();
+        getCommand("ogive").setTabCompleter(completer);
         getCommand("hud").setTabCompleter(completer);
         getCommand("ore").setTabCompleter(completer);
         getCommand("pipe").setTabCompleter(completer);
