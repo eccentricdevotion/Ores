@@ -1,6 +1,7 @@
 package me.eccentric_nz.ores;
 
 import me.eccentric_nz.ores.hud.HUDListener;
+import me.eccentric_nz.ores.nuclear.NuclearRecipe;
 import me.eccentric_nz.ores.ore.OreSmelter;
 import me.eccentric_nz.ores.ore.OresWorldInit;
 import me.eccentric_nz.ores.pipe.PipeRecipes;
@@ -20,6 +21,7 @@ public class Ores extends JavaPlugin {
     private static NamespacedKey oreKey;
     private static NamespacedKey pipeKey;
     private static NamespacedKey collectorKey;
+    private static NamespacedKey generatorKey;
     String pluginName;
 
     public static Ores getPlugin() {
@@ -38,6 +40,10 @@ public class Ores extends JavaPlugin {
         return collectorKey;
     }
 
+    public static NamespacedKey getGeneratorKey() {
+        return generatorKey;
+    }
+
     public static HashMap<UUID, String> getHudPlayers() {
         return hudPlayers;
     }
@@ -52,6 +58,7 @@ public class Ores extends JavaPlugin {
         oreKey = new NamespacedKey(this, "custom_ore");
         pipeKey = new NamespacedKey(this, "lead_pipe");
         collectorKey = new NamespacedKey(this, "lead_collector");
+        generatorKey = new NamespacedKey(this, "nuclear_generator");
         saveDefaultConfig();
         PluginManager pm = getServer().getPluginManager();
         PluginDescriptionFile pdfFile = getDescription();
@@ -69,5 +76,6 @@ public class Ores extends JavaPlugin {
         getCommand("ore").setTabCompleter(completer);
         getCommand("pipe").setTabCompleter(completer);
         new PipeRecipes(this).addRecipes();
+        new NuclearRecipe(this).addRecipe();
     }
 }

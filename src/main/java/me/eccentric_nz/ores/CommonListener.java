@@ -1,5 +1,6 @@
 package me.eccentric_nz.ores;
 
+import me.eccentric_nz.ores.nuclear.NuclearInventory;
 import me.eccentric_nz.ores.ore.OreBroadcast;
 import me.eccentric_nz.ores.ore.OreCounter;
 import me.eccentric_nz.ores.ore.OreData;
@@ -18,13 +19,23 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 
 public class CommonListener implements Listener {
@@ -32,6 +43,7 @@ public class CommonListener implements Listener {
     private final Ores plugin;
     private final OreCounter counter;
     private final OreBroadcast oreBroadcast;
+    private final HashMap<UUID, Block> nuclearViewers = new HashMap<>();
 
     public CommonListener(Ores plugin) {
         this.plugin = plugin;
@@ -52,41 +64,42 @@ public class CommonListener implements Listener {
                 // reduce amount in hand
                 reduceInHand(player);
             }
+            return;
         }
+        Block block = event.getBlockPlaced();
         if (isCollector(is)) {
             // get direction player is facing
             // then set BlockData of brown mushroom block
             switch (player.getFacing()) {
                 case EAST -> {
-                    event.getBlockPlaced().setBlockData(OreData.collectorEastMushroom);
+                    block.setBlockData(OreData.collectorEastMushroom);
                 }
                 case SOUTH -> {
-                    event.getBlockPlaced().setBlockData(OreData.collectorSouthMushroom);
+                    block.setBlockData(OreData.collectorSouthMushroom);
                 }
                 case WEST -> {
-                    event.getBlockPlaced().setBlockData(OreData.collectorWestMushroom);
+                    block.setBlockData(OreData.collectorWestMushroom);
                 }
                 case NORTH -> {
-                    event.getBlockPlaced().setBlockData(OreData.collectorNorthMushroom);
+                    block.setBlockData(OreData.collectorNorthMushroom);
                 }
                 default -> {
                     event.setCancelled(true);
                 }
             }
-            if (!event.isCancelled()) {
-                // set persistent data
-                CustomBlockData customBlockData = new CustomBlockData(event.getBlockPlaced(), plugin);
-                customBlockData.set(Ores.getPipeKey(), PersistentDataType.INTEGER, 1);
-            }
+            return;
         }
         if (isOre(is)) {
             ItemMeta im = is.getItemMeta();
             int cmd = im.getCustomModelData();
             OreType ore = OreType.values()[cmd - 1000];
-            event.getBlockPlaced().setBlockData(ore.getData());
+            block.setBlockData(ore.getData());
+        }
+        if (isGenerator(is)) {
+            block.setBlockData(OreData.nuclearGeneratorMushroom);
             // set persistent data
-            CustomBlockData customBlockData = new CustomBlockData(event.getBlockPlaced(), plugin);
-            customBlockData.set(Ores.getOreKey(), PersistentDataType.INTEGER, cmd);
+            CustomBlockData customBlockData = new CustomBlockData(block, plugin);
+            customBlockData.set(Ores.getGeneratorKey(), PersistentDataType.INTEGER, 0);
         }
     }
 
@@ -98,9 +111,19 @@ public class CommonListener implements Listener {
         }
         MultipleFacing data = (MultipleFacing) block.getBlockData();
         // must use pickaxe
-        ItemStack pick = event.getPlayer().getInventory().getItemInMainHand();
+        Player player = event.getPlayer();
+        ItemStack pick = player.getInventory().getItemInMainHand();
         boolean pickaxe = pick != null && isPickAxe(pick.getType());
         ItemStack is = null;
+        if (data.matches(OreData.nuclearGeneratorMushroom)) {
+            event.setCancelled(true);
+            is = new ItemStack(Material.BROWN_MUSHROOM_BLOCK);
+            ItemMeta im = is.getItemMeta();
+            im.setCustomModelData(1004);
+            im.getPersistentDataContainer().set(Ores.getPipeKey(), PersistentDataType.INTEGER, 1);
+            im.setDisplayName("Nuclear Generator");
+            is.setItemMeta(im);
+        }
         if (OreData.isCollectorMushroom(data)) {
             event.setCancelled(true);
             is = new ItemStack(Material.BROWN_MUSHROOM_BLOCK);
@@ -112,14 +135,14 @@ public class CommonListener implements Listener {
         }
         if (OreData.isOreMushroom(data)) {
             Location loc = event.getBlock().getLocation();
-            boolean announce = true;
+            boolean announce = player.hasPermission("ores.announce");
             if (!counter.isAnnounceable(loc)) {
                 counter.removeAnnouncedOrPlacedBlock(loc);
                 announce = false;
             }
             if (announce) {
                 int count = counter.getTotalBlocks(event.getBlock());
-                oreBroadcast.handleBroadcast(data, count, event.getPlayer());
+                oreBroadcast.handleBroadcast(data, count, player);
             }
             event.setCancelled(true);
             OreType ore;
@@ -172,6 +195,69 @@ public class CommonListener implements Listener {
         }
     }
 
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onInteract(PlayerInteractEvent event) {
+        if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+            return;
+        }
+        if (!event.getHand().equals(EquipmentSlot.HAND)) {
+            return;
+        }
+        Block block = event.getClickedBlock();
+        if (!block.getType().equals(Material.BROWN_MUSHROOM_BLOCK)) {
+            return;
+        }
+        if (block.getBlockData().matches(OreData.nuclearGeneratorMushroom)) {
+            Player player = event.getPlayer();
+            Inventory inventory = Bukkit.getServer().createInventory(player, 9, "Nuclear Generator");
+            inventory.setContents(NuclearInventory.getInventory(block));
+            player.openInventory(inventory);
+            // track player and block
+            nuclearViewers.put(player.getUniqueId(), block);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onInventoryClose(InventoryCloseEvent event) {
+        if (!event.getView().getTitle().equals("Nuclear Generator")) {
+            return;
+        }
+        UUID uuid = event.getPlayer().getUniqueId();
+        if (nuclearViewers.containsKey(uuid)) {
+            Inventory inventory = event.getInventory();
+            // count the number of Uranium Pellets and
+            // remove any items that aren't Uranium Pellets
+            int amount = 0;
+            List<ItemStack> illegal = new ArrayList<>();
+            for (ItemStack is : inventory.getContents()) {
+                if (is != null) {
+                    if (is.isSimilar(NuclearInventory.pellet)) {
+                        amount += is.getAmount();
+                    } else {
+                        illegal.add(is);
+                    }
+                }
+            }
+            Block block = nuclearViewers.get(uuid);
+            CustomBlockData customBlockData = new CustomBlockData(block, plugin);
+            customBlockData.set(Ores.getGeneratorKey(), PersistentDataType.INTEGER, amount);
+            if (illegal.size() > 0) {
+                for (ItemStack is : illegal) {
+                    block.getWorld().dropItemNaturally(block.getLocation().add(0, 1, 0), is);
+                }
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void onBlockPhysics(BlockPhysicsEvent event) {
+        Block block = event.getBlock();
+        if (block.getType().equals(Material.BROWN_MUSHROOM_BLOCK)) {
+            event.setCancelled(true);
+            event.getBlock().getState().update(true, false);
+        }
+    }
+
     private void reduceInHand(Player player) {
         ItemStack itemStack = player.getInventory().getItemInMainHand();
         int count = itemStack.getAmount();
@@ -210,6 +296,22 @@ public class CommonListener implements Listener {
             return false;
         }
         if (!is.getItemMeta().getPersistentDataContainer().has(Ores.getPipeKey(), PersistentDataType.INTEGER)) {
+            return false;
+        }
+        return is.getItemMeta().hasCustomModelData();
+    }
+
+    private boolean isGenerator(ItemStack is) {
+        if (is == null) {
+            return false;
+        }
+        if (!is.getType().equals(Material.BROWN_MUSHROOM_BLOCK)) {
+            return false;
+        }
+        if (!is.hasItemMeta()) {
+            return false;
+        }
+        if (!is.getItemMeta().getPersistentDataContainer().has(Ores.getGeneratorKey(), PersistentDataType.INTEGER)) {
             return false;
         }
         return is.getItemMeta().hasCustomModelData();

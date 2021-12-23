@@ -12,6 +12,7 @@ public class OreData {
     public static final MultipleFacing collectorEastMushroom = (MultipleFacing) Bukkit.createBlockData("minecraft:brown_mushroom_block[down=true,east=true,north=true,south=true,up=false,west=false]");
     public static final MultipleFacing collectorSouthMushroom = (MultipleFacing) Bukkit.createBlockData("minecraft:brown_mushroom_block[down=true,east=true,north=true,south=true,up=false,west=true]");
     public static final MultipleFacing collectorWestMushroom = (MultipleFacing) Bukkit.createBlockData("minecraft:brown_mushroom_block[down=true,east=true,north=true,south=true,up=true,west=false]");
+    public static final MultipleFacing nuclearGeneratorMushroom = (MultipleFacing) Bukkit.createBlockData("minecraft:brown_mushroom_block[down=true,east=true,north=false,south=true,up=true,west=true]");
 
     public static boolean isOreMushroom(MultipleFacing data) {
         return data.matches(bauxiteMushroom) || data.matches(leadMushroom) || data.matches(uraniumMushroom);
@@ -19,5 +20,9 @@ public class OreData {
 
     public static boolean isCollectorMushroom(MultipleFacing data) {
         return data.matches(collectorEastMushroom) || data.matches(collectorNorthMushroom) || data.matches(collectorWestMushroom) || data.matches(collectorSouthMushroom);
+    }
+
+    public static boolean isNuclearMushroom(MultipleFacing data) {
+        return data.matches(nuclearGeneratorMushroom);
     }
 }

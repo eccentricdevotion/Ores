@@ -8,6 +8,9 @@ api-version: 1.18
 website: http://tardisjenkins.duckdns.org:8080/job/ores
 dev-url: http://tardisjenkins.duckdns.org:8080/job/ores
 permissions:
+  ores.announce:
+    description: Allow players to receive a message with the number of ores when starting to mine an ore vein.
+    default: op
   ores.hud:
     description: Permission to use the /hud command.
     default: op
@@ -17,7 +20,7 @@ permissions:
 commands:
   hud:
     description: Turn on the target block HUD.
-    usage: /<command>
+    usage: /<command> [custom|vanilla]
     permission: ores.hud
     permission-message: You don't have the permission <permission> to use this command
   ore:

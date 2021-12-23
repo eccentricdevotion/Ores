@@ -5,6 +5,9 @@
     <artifactId>Ores</artifactId>
     <version>1.0.0</version>
     <name>Ores</name>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
     <repositories>
         <repository>
             <id>Spigot</id>
