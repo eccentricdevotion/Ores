@@ -1,6 +1,6 @@
 package me.eccentric_nz.ores.ore;
 
-import me.eccentric_nz.ores.Ores;
+import me.eccentric_nz.ores.mOre;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.generator.BlockPopulator;
@@ -14,9 +14,9 @@ import java.util.Random;
 public class OrePopulator extends BlockPopulator {
 
     private final List<OreGenerator> ores = new ArrayList<OreGenerator>();
-    private final Ores plugin;
+    private final mOre plugin;
 
-    public OrePopulator(Ores plugin, World world) {
+    public OrePopulator(mOre plugin, World world) {
         this.plugin = plugin;
         FileConfiguration config = this.plugin.getConfig();
         // OreGenerator(Ore ore, int veinSize, int tries, int minHeight, int maxHeight)

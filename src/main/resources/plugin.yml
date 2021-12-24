@@ -1,7 +1,7 @@
 author: eccentric_nz
 description: Custom ores using item frames and resource pack custom models - with block break animations, custom drops and smelting.
-main: me.eccentric_nz.ores.Ores
-name: Ores
+main: me.eccentric_nz.ores.mOre
+name: mOre
 load: STARTUP
 version: 1.0.0
 api-version: 1.18
@@ -17,9 +17,9 @@ permissions:
     description: Permission to use the /ore and /pipe commands.
     default: op
 commands:
-  ogive:
+  moregive:
     description: Give Ore items.
-    aliases: [ og ]
+    aliases: [ mg ]
     usage: /<command> [item]
     permission: ores.use
     permission-message: You don't have the permission <permission> to use this command

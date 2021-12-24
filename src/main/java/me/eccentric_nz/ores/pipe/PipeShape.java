@@ -1,6 +1,6 @@
 package me.eccentric_nz.ores.pipe;
 
-import me.eccentric_nz.ores.Ores;
+import me.eccentric_nz.ores.mOre;
 import org.bukkit.Rotation;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
@@ -46,8 +46,8 @@ public enum PipeShape {
         Collection<Entity> entities = world.getNearbyEntities(PipeCoords.getLocation(world, coords), 0.25d, 0.25d, 0.25d, (e) -> e.getType() == EntityType.ITEM_FRAME);
         if (entities.size() > 0) {
             ItemFrame frame = (ItemFrame) entities.iterator().next();
-            if (frame.getPersistentDataContainer().has(Ores.getPipeKey(), PersistentDataType.STRING)) {
-                String shape = frame.getPersistentDataContainer().get(Ores.getPipeKey(), PersistentDataType.STRING);
+            if (frame.getPersistentDataContainer().has(mOre.getPipeKey(), PersistentDataType.STRING)) {
+                String shape = frame.getPersistentDataContainer().get(mOre.getPipeKey(), PersistentDataType.STRING);
                 if (shape != null) {
                     return PipeShape.valueOf(shape.toUpperCase(Locale.ROOT));
                 }
@@ -60,7 +60,7 @@ public enum PipeShape {
         Collection<Entity> entities = world.getNearbyEntities(PipeCoords.getLocation(world, coords), 0.25d, 0.25d, 0.25d, (e) -> e.getType() == EntityType.ITEM_FRAME);
         if (entities.size() > 0) {
             ItemFrame frame = (ItemFrame) entities.iterator().next();
-            frame.getPersistentDataContainer().set(Ores.getPipeKey(), PersistentDataType.STRING, shape.toString());
+            frame.getPersistentDataContainer().set(mOre.getPipeKey(), PersistentDataType.STRING, shape.toString());
             ItemStack is = frame.getItem();
             ItemMeta im = is.getItemMeta();
             im.setCustomModelData(shape.getCustomModelData());

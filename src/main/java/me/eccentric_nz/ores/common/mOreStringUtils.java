@@ -1,6 +1,6 @@
-package me.eccentric_nz.ores;
+package me.eccentric_nz.ores.common;
 
-public class OresStringUtils {
+public class mOreStringUtils {
 
     public static String capitalise(String s) {
         String[] split = s.split("_");

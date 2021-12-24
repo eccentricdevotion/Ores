@@ -1,5 +1,8 @@
 package me.eccentric_nz.ores;
 
+import me.eccentric_nz.ores.common.CommonListener;
+import me.eccentric_nz.ores.common.mOreCommand;
+import me.eccentric_nz.ores.common.mOreTabCompleter;
 import me.eccentric_nz.ores.hud.HUDListener;
 import me.eccentric_nz.ores.nuclear.NuclearRecipe;
 import me.eccentric_nz.ores.nuclear.NuclearRunnable;
@@ -18,10 +21,10 @@ import java.util.HashMap;
 import java.util.UUID;
 import java.util.logging.Level;
 
-public class Ores extends JavaPlugin {
+public class mOre extends JavaPlugin {
 
     private static final HashMap<UUID, String> hudPlayers = new HashMap<>();
-    private static Ores plugin;
+    private static mOre plugin;
     private static NamespacedKey oreKey;
     private static NamespacedKey pipeKey;
     private static NamespacedKey collectorKey;
@@ -29,7 +32,7 @@ public class Ores extends JavaPlugin {
     String pluginName;
     private NuclearStorage service;
 
-    public static Ores getPlugin() {
+    public static mOre getPlugin() {
         return plugin;
     }
 
@@ -83,13 +86,13 @@ public class Ores extends JavaPlugin {
         pm.registerEvents(new CommonListener(this), this);
         pm.registerEvents(new HUDListener(), this);
         // register commands
-        OresCommand command = new OresCommand();
-        getCommand("ogive").setExecutor(command);
+        mOreCommand command = new mOreCommand();
+        getCommand("moregive").setExecutor(command);
         getCommand("hud").setExecutor(command);
         getCommand("ore").setExecutor(command);
         getCommand("pipe").setExecutor(command);
-        OresTabCompleter completer = new OresTabCompleter();
-        getCommand("ogive").setTabCompleter(completer);
+        mOreTabCompleter completer = new mOreTabCompleter();
+        getCommand("moregive").setTabCompleter(completer);
         getCommand("hud").setTabCompleter(completer);
         getCommand("ore").setTabCompleter(completer);
         getCommand("pipe").setTabCompleter(completer);

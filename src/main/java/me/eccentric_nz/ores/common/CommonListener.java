@@ -1,5 +1,6 @@
-package me.eccentric_nz.ores;
+package me.eccentric_nz.ores.common;
 
+import me.eccentric_nz.ores.mOre;
 import me.eccentric_nz.ores.nuclear.NuclearInventory;
 import me.eccentric_nz.ores.nuclear.NuclearStorage;
 import me.eccentric_nz.ores.ore.OreBroadcast;
@@ -41,12 +42,12 @@ import java.util.UUID;
 
 public class CommonListener implements Listener {
 
-    private final Ores plugin;
+    private final mOre plugin;
     private final OreCounter counter;
     private final OreBroadcast oreBroadcast;
     private final HashMap<UUID, Block> nuclearViewers = new HashMap<>();
 
-    public CommonListener(Ores plugin) {
+    public CommonListener(mOre plugin) {
         this.plugin = plugin;
         counter = new OreCounter();
         oreBroadcast = new OreBroadcast();
@@ -100,7 +101,7 @@ public class CommonListener implements Listener {
             block.setBlockData(OreData.nuclearGeneratorMushroom);
             // set persistent data
             CustomBlockData customBlockData = new CustomBlockData(block, plugin);
-            customBlockData.set(Ores.getGeneratorKey(), PersistentDataType.INTEGER, 0);
+            customBlockData.set(mOre.getGeneratorKey(), PersistentDataType.INTEGER, 0);
             // save block storage
             NuclearStorage.addBlock(block);
         }
@@ -123,7 +124,7 @@ public class CommonListener implements Listener {
             is = new ItemStack(Material.BROWN_MUSHROOM_BLOCK);
             ItemMeta im = is.getItemMeta();
             im.setCustomModelData(1004);
-            im.getPersistentDataContainer().set(Ores.getPipeKey(), PersistentDataType.INTEGER, 1);
+            im.getPersistentDataContainer().set(mOre.getPipeKey(), PersistentDataType.INTEGER, 1);
             im.setDisplayName("Nuclear Generator");
             is.setItemMeta(im);
             // remove block storage
@@ -134,7 +135,7 @@ public class CommonListener implements Listener {
             is = new ItemStack(Material.BROWN_MUSHROOM_BLOCK);
             ItemMeta im = is.getItemMeta();
             im.setCustomModelData(1003);
-            im.getPersistentDataContainer().set(Ores.getCollectorKey(), PersistentDataType.INTEGER, 1);
+            im.getPersistentDataContainer().set(mOre.getCollectorKey(), PersistentDataType.INTEGER, 1);
             im.setDisplayName("Lead Collector");
             is.setItemMeta(im);
         }
@@ -170,7 +171,7 @@ public class CommonListener implements Listener {
                 im = is.getItemMeta();
                 im.setCustomModelData(1000);
             }
-            im.getPersistentDataContainer().set(Ores.getOreKey(), PersistentDataType.INTEGER, ore.ordinal());
+            im.getPersistentDataContainer().set(mOre.getOreKey(), PersistentDataType.INTEGER, ore.ordinal());
             im.setDisplayName(ore.getOreName());
             is.setItemMeta(im);
         }
@@ -195,7 +196,7 @@ public class CommonListener implements Listener {
                 ItemMeta leadItemMeta = pipe.getItemMeta();
                 leadItemMeta.setDisplayName("Lead Pipe");
                 leadItemMeta.setCustomModelData(1001);
-                leadItemMeta.getPersistentDataContainer().set(Ores.getPipeKey(), PersistentDataType.INTEGER, 1);
+                leadItemMeta.getPersistentDataContainer().set(mOre.getPipeKey(), PersistentDataType.INTEGER, 1);
                 pipe.setItemMeta(leadItemMeta);
                 frame.getWorld().dropItemNaturally(frame.getLocation(), pipe);
                 // remove item frame
@@ -265,7 +266,7 @@ public class CommonListener implements Listener {
             }
             Block block = nuclearViewers.get(uuid);
             CustomBlockData customBlockData = new CustomBlockData(block, plugin);
-            customBlockData.set(Ores.getGeneratorKey(), PersistentDataType.INTEGER, amount);
+            customBlockData.set(mOre.getGeneratorKey(), PersistentDataType.INTEGER, amount);
             if (illegal.size() > 0) {
                 for (ItemStack is : illegal) {
                     block.getWorld().dropItemNaturally(block.getLocation().add(0, 1, 0), is);
@@ -304,7 +305,7 @@ public class CommonListener implements Listener {
         if (!is.hasItemMeta()) {
             return false;
         }
-        if (!is.getItemMeta().getPersistentDataContainer().has(Ores.getPipeKey(), PersistentDataType.INTEGER)) {
+        if (!is.getItemMeta().getPersistentDataContainer().has(mOre.getPipeKey(), PersistentDataType.INTEGER)) {
             return false;
         }
         return is.getItemMeta().hasCustomModelData();
@@ -320,7 +321,7 @@ public class CommonListener implements Listener {
         if (!is.hasItemMeta()) {
             return false;
         }
-        if (!is.getItemMeta().getPersistentDataContainer().has(Ores.getCollectorKey(), PersistentDataType.INTEGER)) {
+        if (!is.getItemMeta().getPersistentDataContainer().has(mOre.getCollectorKey(), PersistentDataType.INTEGER)) {
             return false;
         }
         return is.getItemMeta().hasCustomModelData();
@@ -336,7 +337,7 @@ public class CommonListener implements Listener {
         if (!is.hasItemMeta()) {
             return false;
         }
-        if (!is.getItemMeta().getPersistentDataContainer().has(Ores.getGeneratorKey(), PersistentDataType.INTEGER)) {
+        if (!is.getItemMeta().getPersistentDataContainer().has(mOre.getGeneratorKey(), PersistentDataType.INTEGER)) {
             return false;
         }
         return is.getItemMeta().hasCustomModelData();
@@ -352,7 +353,7 @@ public class CommonListener implements Listener {
         if (!is.hasItemMeta()) {
             return false;
         }
-        if (!is.getItemMeta().getPersistentDataContainer().has(Ores.getOreKey(), PersistentDataType.INTEGER)) {
+        if (!is.getItemMeta().getPersistentDataContainer().has(mOre.getOreKey(), PersistentDataType.INTEGER)) {
             return false;
         }
         return is.getItemMeta().hasCustomModelData();

@@ -1,6 +1,6 @@
 package me.eccentric_nz.ores.nuclear;
 
-import me.eccentric_nz.ores.Ores;
+import me.eccentric_nz.ores.mOre;
 import me.eccentric_nz.ores.pipe.CustomBlockData;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -17,25 +17,25 @@ public class NuclearInventory {
         ItemMeta pelletItemMeta = pellet.getItemMeta();
         pelletItemMeta.setDisplayName("Uranium Pellet");
         pelletItemMeta.setCustomModelData(1000);
-        pelletItemMeta.getPersistentDataContainer().set(Ores.getOreKey(), PersistentDataType.INTEGER, 1);
+        pelletItemMeta.getPersistentDataContainer().set(mOre.getOreKey(), PersistentDataType.INTEGER, 1);
         pellet.setItemMeta(pelletItemMeta);
     }
 
     public static int getAmount(Block block) {
         // get persistent data
-        CustomBlockData customBlockData = new CustomBlockData(block, Ores.getPlugin());
-        return customBlockData.get(Ores.getGeneratorKey(), PersistentDataType.INTEGER);
+        CustomBlockData customBlockData = new CustomBlockData(block, mOre.getPlugin());
+        return customBlockData.get(mOre.getGeneratorKey(), PersistentDataType.INTEGER);
     }
 
     public static void setAmount(Block block, int amount) {
         // set persistent data
-        CustomBlockData customBlockData = new CustomBlockData(block, Ores.getPlugin());
-        customBlockData.set(Ores.getGeneratorKey(), PersistentDataType.INTEGER, amount);
+        CustomBlockData customBlockData = new CustomBlockData(block, mOre.getPlugin());
+        customBlockData.set(mOre.getGeneratorKey(), PersistentDataType.INTEGER, amount);
     }
 
     public static ItemStack[] getInventory(Block block) {
-        CustomBlockData customBlockData = new CustomBlockData(block, Ores.getPlugin());
-        int amount = customBlockData.get(Ores.getGeneratorKey(), PersistentDataType.INTEGER);
+        CustomBlockData customBlockData = new CustomBlockData(block, mOre.getPlugin());
+        int amount = customBlockData.get(mOre.getGeneratorKey(), PersistentDataType.INTEGER);
         ItemStack[] contents = new ItemStack[9];
         if (amount > 0) {
             // max stack size is 64

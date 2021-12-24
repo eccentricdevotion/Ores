@@ -1,7 +1,7 @@
 package me.eccentric_nz.ores.hud;
 
-import me.eccentric_nz.ores.Ores;
-import me.eccentric_nz.ores.OresStringUtils;
+import me.eccentric_nz.ores.common.mOreStringUtils;
+import me.eccentric_nz.ores.mOre;
 import me.eccentric_nz.ores.ore.OreData;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -17,10 +17,10 @@ public class HUDListener implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
-        if (Ores.getHudPlayers().containsKey(player.getUniqueId())) {
-            String showVanilla = Ores.getHudPlayers().get(player.getUniqueId());
+        if (mOre.getHudPlayers().containsKey(player.getUniqueId())) {
+            String showVanilla = mOre.getHudPlayers().get(player.getUniqueId());
             Block block = player.getTargetBlock(null, 6);
-            String material = OresStringUtils.capitalise(block.getType().toString());
+            String material = mOreStringUtils.capitalise(block.getType().toString());
             boolean show = false;
             if (material.equals("Brown Mushroom Block")) {
                 MultipleFacing mushroom = (MultipleFacing) block.getBlockData();

@@ -1,5 +1,6 @@
-package me.eccentric_nz.ores;
+package me.eccentric_nz.ores.common;
 
+import me.eccentric_nz.ores.mOre;
 import me.eccentric_nz.ores.ore.OreData;
 import me.eccentric_nz.ores.ore.OreType;
 import me.eccentric_nz.ores.pipe.PipeShape;
@@ -20,7 +21,7 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.Locale;
 import java.util.UUID;
 
-public class OresCommand implements CommandExecutor {
+public class mOreCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -31,18 +32,18 @@ public class OresCommand implements CommandExecutor {
                     player.sendMessage("Too few command arguments!");
                     return false;
                 }
-                OresGiver.giveItem(args[0].toLowerCase(Locale.ROOT), player);
+                mOreGiver.giveItem(args[0].toLowerCase(Locale.ROOT), player);
                 return true;
             }
             if (cmd.getName().equalsIgnoreCase("hud")) {
                 // toggle HUD
                 if (player.hasPermission("ores.hud")) {
-                    if (Ores.getHudPlayers().containsKey(uuid)) {
-                        Ores.getHudPlayers().remove(uuid);
+                    if (mOre.getHudPlayers().containsKey(uuid)) {
+                        mOre.getHudPlayers().remove(uuid);
                         player.sendMessage("HUD disabled");
                     } else {
                         String which = args.length > 0 ? args[0].toLowerCase(Locale.ROOT) : "custom";
-                        Ores.getHudPlayers().put(uuid, which);
+                        mOre.getHudPlayers().put(uuid, which);
                         player.sendMessage("HUD enabled");
                     }
                 } else {
@@ -87,12 +88,12 @@ public class OresCommand implements CommandExecutor {
                             ItemMeta im = lead.getItemMeta();
                             im.setDisplayName("");
                             im.setCustomModelData(shape.getCustomModelData());
-                            im.getPersistentDataContainer().set(Ores.getPipeKey(), PersistentDataType.INTEGER, 1);
+                            im.getPersistentDataContainer().set(mOre.getPipeKey(), PersistentDataType.INTEGER, 1);
                             lead.setItemMeta(im);
                             frame.setItem(lead);
                             frame.setRotation(shape.getRotation());
                             frame.setVisible(false);
-                            frame.getPersistentDataContainer().set(Ores.getPipeKey(), PersistentDataType.STRING, shape.toString());
+                            frame.getPersistentDataContainer().set(mOre.getPipeKey(), PersistentDataType.STRING, shape.toString());
                             return true;
                         } catch (IllegalArgumentException e) {
                             return false;

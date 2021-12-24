@@ -1,5 +1,6 @@
-package me.eccentric_nz.ores;
+package me.eccentric_nz.ores.common;
 
+import me.eccentric_nz.ores.mOre;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -7,13 +8,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
-public class OresGiver {
+public class mOreGiver {
 
     public static void giveItem(String which, Player player) {
         Material material = Material.BROWN_MUSHROOM_BLOCK;
-        NamespacedKey key = Ores.getOreKey();
+        NamespacedKey key = mOre.getOreKey();
         int cmd = 1000;
-        String name = OresStringUtils.capitalise(which);
+        String name = mOreStringUtils.capitalise(which);
         switch (which) {
             case "uranium_ore" -> {
                 cmd = 1001;
@@ -41,16 +42,16 @@ public class OresGiver {
             }
             case "nuclear_generator" -> {
                 cmd = 1004;
-                key = Ores.getGeneratorKey();
+                key = mOre.getGeneratorKey();
             }
             case "lead_pipe" -> {
                 material = Material.STRING;
                 cmd = 1001;
-                key = Ores.getPipeKey();
+                key = mOre.getPipeKey();
             }
             case "lead_collector" -> {
                 cmd = 1003;
-                key = Ores.getCollectorKey();
+                key = mOre.getCollectorKey();
             }
             default -> {
             }

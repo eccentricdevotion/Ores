@@ -1,6 +1,6 @@
 package me.eccentric_nz.ores.ore;
 
-import me.eccentric_nz.ores.Ores;
+import me.eccentric_nz.ores.mOre;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -9,9 +9,9 @@ import org.bukkit.generator.BlockPopulator;
 
 public class OresWorldInit implements Listener {
 
-    private final Ores plugin;
+    private final mOre plugin;
 
-    public OresWorldInit(Ores plugin) {
+    public OresWorldInit(mOre plugin) {
         this.plugin = plugin;
     }
 

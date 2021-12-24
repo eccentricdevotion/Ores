@@ -1,6 +1,6 @@
 package me.eccentric_nz.ores.ore;
 
-import me.eccentric_nz.ores.Ores;
+import me.eccentric_nz.ores.mOre;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,9 +11,9 @@ import org.bukkit.persistence.PersistentDataType;
 
 public class OreSmelter implements Listener {
 
-    private final Ores plugin;
+    private final mOre plugin;
 
-    public OreSmelter(Ores plugin) {
+    public OreSmelter(mOre plugin) {
         this.plugin = plugin;
     }
 
@@ -24,7 +24,7 @@ public class OreSmelter implements Listener {
         if (isOre(source)) {
             ItemMeta im = result.getItemMeta();
             im.setCustomModelData(1000);
-            im.getPersistentDataContainer().set(Ores.getOreKey(), PersistentDataType.INTEGER, 1);
+            im.getPersistentDataContainer().set(mOre.getOreKey(), PersistentDataType.INTEGER, 1);
             im.setDisplayName(OreType.getByMaterial(source.getType()).getIngotName());
             result.setItemMeta(im);
         }
@@ -40,7 +40,7 @@ public class OreSmelter implements Listener {
         if (!is.hasItemMeta()) {
             return false;
         }
-        if (!is.getItemMeta().getPersistentDataContainer().has(Ores.getOreKey(), PersistentDataType.INTEGER)) {
+        if (!is.getItemMeta().getPersistentDataContainer().has(mOre.getOreKey(), PersistentDataType.INTEGER)) {
             return false;
         }
         return is.getItemMeta().hasCustomModelData();

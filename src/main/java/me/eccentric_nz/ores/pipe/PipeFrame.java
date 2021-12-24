@@ -1,6 +1,6 @@
 package me.eccentric_nz.ores.pipe;
 
-import me.eccentric_nz.ores.Ores;
+import me.eccentric_nz.ores.mOre;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -29,7 +29,7 @@ public class PipeFrame {
         if (!is.hasItemMeta()) {
             return false;
         }
-        if (!is.getItemMeta().getPersistentDataContainer().has(Ores.getPipeKey(), PersistentDataType.INTEGER)) {
+        if (!is.getItemMeta().getPersistentDataContainer().has(mOre.getPipeKey(), PersistentDataType.INTEGER)) {
             return false;
         }
         return is.getItemMeta().hasCustomModelData();
@@ -46,13 +46,13 @@ public class PipeFrame {
         ItemMeta im = pipe.getItemMeta();
         im.setDisplayName("");
         im.setCustomModelData(shape.getCustomModelData());
-        im.getPersistentDataContainer().set(Ores.getPipeKey(), PersistentDataType.INTEGER, 1);
+        im.getPersistentDataContainer().set(mOre.getPipeKey(), PersistentDataType.INTEGER, 1);
         pipe.setItemMeta(im);
         frame.setItem(pipe);
         frame.setRotation(shape.getRotation());
         frame.setVisible(false);
 //        frame.setFixed(true);
-        frame.getPersistentDataContainer().set(Ores.getPipeKey(), PersistentDataType.STRING, shape.toString());
+        frame.getPersistentDataContainer().set(mOre.getPipeKey(), PersistentDataType.STRING, shape.toString());
         new PipeLogic(location.getWorld(), new PipeCoords(location.getBlockX(), location.getBlockY(), location.getBlockZ()), shape).place(shape);
     }
 }
