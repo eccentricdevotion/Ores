@@ -1,6 +1,7 @@
 package me.eccentric_nz.ores;
 
 import me.eccentric_nz.ores.nuclear.NuclearInventory;
+import me.eccentric_nz.ores.nuclear.NuclearStorage;
 import me.eccentric_nz.ores.ore.OreBroadcast;
 import me.eccentric_nz.ores.ore.OreCounter;
 import me.eccentric_nz.ores.ore.OreData;
@@ -100,6 +101,8 @@ public class CommonListener implements Listener {
             // set persistent data
             CustomBlockData customBlockData = new CustomBlockData(block, plugin);
             customBlockData.set(Ores.getGeneratorKey(), PersistentDataType.INTEGER, 0);
+            // save block storage
+            NuclearStorage.addBlock(block);
         }
     }
 
@@ -123,6 +126,8 @@ public class CommonListener implements Listener {
             im.getPersistentDataContainer().set(Ores.getPipeKey(), PersistentDataType.INTEGER, 1);
             im.setDisplayName("Nuclear Generator");
             is.setItemMeta(im);
+            // remove block storage
+            NuclearStorage.removeBlock(block);
         }
         if (OreData.isCollectorMushroom(data)) {
             event.setCancelled(true);
