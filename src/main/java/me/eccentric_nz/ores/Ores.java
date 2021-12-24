@@ -2,6 +2,7 @@ package me.eccentric_nz.ores;
 
 import me.eccentric_nz.ores.hud.HUDListener;
 import me.eccentric_nz.ores.nuclear.NuclearRecipe;
+import me.eccentric_nz.ores.nuclear.NuclearRunnable;
 import me.eccentric_nz.ores.nuclear.NuclearStorage;
 import me.eccentric_nz.ores.ore.OreSmelter;
 import me.eccentric_nz.ores.ore.OresWorldInit;
@@ -76,10 +77,12 @@ public class Ores extends JavaPlugin {
         PluginManager pm = getServer().getPluginManager();
         PluginDescriptionFile pdfFile = getDescription();
         pluginName = ChatColor.GOLD + "[" + pdfFile.getName() + "]" + ChatColor.RESET + " ";
+        // register event listeners
         pm.registerEvents(new OresWorldInit(this), this);
         pm.registerEvents(new OreSmelter(this), this);
         pm.registerEvents(new CommonListener(this), this);
         pm.registerEvents(new HUDListener(), this);
+        // register commands
         OresCommand command = new OresCommand();
         getCommand("ogive").setExecutor(command);
         getCommand("hud").setExecutor(command);
@@ -92,5 +95,7 @@ public class Ores extends JavaPlugin {
         getCommand("pipe").setTabCompleter(completer);
         new PipeRecipes(this).addRecipes();
         new NuclearRecipe(this).addRecipe();
+        // start nuclear generator runnable
+        getServer().getScheduler().scheduleSyncDelayedTask(this, new NuclearRunnable(), getConfig().getLong("nuclear.depletion_ticks"));
     }
 }

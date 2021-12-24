@@ -30,3 +30,6 @@ ores:
     tries: 20
     min_height: -32
     max_height: 64
+nuclear:
+  depletion_ticks: 24000
+  pipe_ticks: 5
