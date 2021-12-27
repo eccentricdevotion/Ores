@@ -21,26 +21,29 @@ public class NuclearStorage {
     }
 
     public static void loadBlocks() {
+        Bukkit.getLogger().log(Level.INFO, "[mOre] Loading nuclear blocks...");
         List<Block> blocks = new ArrayList<>();
         // get blocks from database
         Statement statement = null;
-        ResultSet rsGet = null;
+        ResultSet rs = null;
         try {
             statement = getInstance().connection.createStatement();
-            rsGet = statement.executeQuery("SELECT * FROM nuclear_blocks");
-            while (rsGet.next()) {
-                World world = Bukkit.getWorld(rsGet.getString("world"));
+            rs = statement.executeQuery("SELECT * FROM nuclear_blocks");
+            while (rs.next()) {
+                World world = Bukkit.getWorld(rs.getString("world"));
                 if (world != null) {
-                    Block block = world.getBlockAt(rsGet.getInt("x"), rsGet.getInt("y"), rsGet.getInt("z"));
+                    Block block = world.getBlockAt(rs.getInt("x"), rs.getInt("y"), rs.getInt("z"));
                     blocks.add(block);
+                } else {
+                    Bukkit.getLogger().log(Level.INFO, "world is null!");
                 }
             }
         } catch (SQLException e) {
             Bukkit.getLogger().log(Level.WARNING, "Could not get nuclear blocks: " + e);
         } finally {
             try {
-                if (rsGet != null) {
-                    rsGet.close();
+                if (rs != null) {
+                    rs.close();
                 }
                 if (statement != null) {
                     statement.close();
@@ -75,7 +78,7 @@ public class NuclearStorage {
     public static void deleteBlock(Block block) {
         PreparedStatement ps = null;
         try {
-            ps = getInstance().connection.prepareStatement("DELETE FROM nuclear_blocks WHERE world = ? AND x = ? AND y = ? AND z ?");
+            ps = getInstance().connection.prepareStatement("DELETE FROM nuclear_blocks WHERE world = ? AND x = ? AND y = ? AND z = ?");
             ps.setString(1, block.getWorld().getName());
             ps.setInt(2, block.getX());
             ps.setInt(3, block.getY());

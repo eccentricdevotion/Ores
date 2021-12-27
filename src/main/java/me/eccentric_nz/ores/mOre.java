@@ -4,6 +4,7 @@ import me.eccentric_nz.ores.common.CommonListener;
 import me.eccentric_nz.ores.common.mOreCommand;
 import me.eccentric_nz.ores.common.mOreTabCompleter;
 import me.eccentric_nz.ores.hud.HUDListener;
+import me.eccentric_nz.ores.nuclear.NuclearGenerator;
 import me.eccentric_nz.ores.nuclear.NuclearRecipe;
 import me.eccentric_nz.ores.nuclear.NuclearRunnable;
 import me.eccentric_nz.ores.nuclear.NuclearStorage;
@@ -76,7 +77,6 @@ public class mOre extends JavaPlugin {
         } catch (Exception e) {
             getLogger().log(Level.WARNING, "Connection and Tables Error: " + e);
         }
-        NuclearStorage.loadBlocks();
         PluginManager pm = getServer().getPluginManager();
         PluginDescriptionFile pdfFile = getDescription();
         pluginName = ChatColor.GOLD + "[" + pdfFile.getName() + "]" + ChatColor.RESET + " ";
@@ -98,7 +98,12 @@ public class mOre extends JavaPlugin {
         getCommand("pipe").setTabCompleter(completer);
         new PipeRecipes(this).addRecipes();
         new NuclearRecipe(this).addRecipe();
-        // start nuclear generator runnable
-        getServer().getScheduler().scheduleSyncDelayedTask(this, new NuclearRunnable(), getConfig().getLong("nuclear.depletion_ticks"));
+        // need a delay, as worlds may not have loaded yet
+        getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+            // start nuclear generator runnables
+            NuclearStorage.loadBlocks();
+            getServer().getScheduler().scheduleSyncRepeatingTask(this, new NuclearRunnable(), 1L, getConfig().getLong("nuclear.depletion_ticks"));
+            getServer().getScheduler().scheduleSyncRepeatingTask(this, new NuclearGenerator(), 3L, getConfig().getLong("nuclear.pipe_ticks"));
+        }, 60l);
     }
 }
