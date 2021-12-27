@@ -21,10 +21,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPhysicsEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
@@ -35,10 +32,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class CommonListener implements Listener {
 
@@ -46,6 +40,7 @@ public class CommonListener implements Listener {
     private final OreCounter counter;
     private final OreBroadcast oreBroadcast;
     private final HashMap<UUID, Block> nuclearViewers = new HashMap<>();
+    private final List<BlockFace> faces = Arrays.asList(BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST);
 
     public CommonListener(mOre plugin) {
         this.plugin = plugin;
@@ -180,7 +175,7 @@ public class CommonListener implements Listener {
             block.setType(Material.AIR);
             if (pickaxe) {
                 // drop custom brown mushroom block / raw_ore
-                block.getWorld().dropItemNaturally(block.getLocation(), is);
+                block.getWorld().dropItem(block.getLocation(), is);
             }
         }
     }
@@ -198,7 +193,7 @@ public class CommonListener implements Listener {
                 leadItemMeta.setCustomModelData(1001);
                 leadItemMeta.getPersistentDataContainer().set(mOre.getPipeKey(), PersistentDataType.INTEGER, 1);
                 pipe.setItemMeta(leadItemMeta);
-                frame.getWorld().dropItemNaturally(frame.getLocation(), pipe);
+                frame.getWorld().dropItem(frame.getLocation(), pipe);
                 // remove item frame
                 plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, frame::remove, 1L);
             }
@@ -212,7 +207,7 @@ public class CommonListener implements Listener {
             if (isPipe(is)) {
                 PipeShape shape = PipeShape.get(frame.getWorld(), new PipeCoords(frame.getLocation().getBlockX(), frame.getLocation().getBlockY(), frame.getLocation().getBlockZ()));
                 if (shape != null) {
-                    Location end = new PipePath().getExit(frame.getLocation(), shape, event.getPlayer().getFacing());
+                    Location end = new PipePath().getExit(frame.getLocation(), shape, event.getPlayer().getFacing()).getExit();
 //                    Bukkit.getLogger().log(Level.INFO, "Pipe shape = " + shape + ", end location: " + end);
                     end.getBlock().setType(Material.LIGHT_BLUE_CARPET);
                 }
@@ -269,7 +264,7 @@ public class CommonListener implements Listener {
             customBlockData.set(mOre.getGeneratorKey(), PersistentDataType.INTEGER, amount);
             if (illegal.size() > 0) {
                 for (ItemStack is : illegal) {
-                    block.getWorld().dropItemNaturally(block.getLocation().add(0, 1, 0), is);
+                    block.getWorld().dropItem(block.getLocation().add(0, 1, 0), is);
                 }
             }
         }
@@ -282,6 +277,30 @@ public class CommonListener implements Listener {
             event.setCancelled(true);
             event.getBlock().getState().update(true, false);
         }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onBlockFromTo(final BlockFromToEvent event) {
+        Block block = event.getBlock();
+        if (block.getType().equals(Material.WATER)) {
+            // check if is at the end of a pipe
+            if (hasPipe(block)) {
+                event.setCancelled(true);
+            }
+            return;
+        }
+    }
+
+    private boolean hasPipe(Block block) {
+        boolean hasPipe = false;
+        for (BlockFace face : faces) {
+            Block b = block.getRelative(face);
+            if (PipeShape.isPipe(block.getWorld(), new PipeCoords(block.getX(), block.getY(), block.getZ()))) {
+                hasPipe = true;
+                break;
+            }
+        }
+        return hasPipe;
     }
 
     private void reduceInHand(Player player) {
