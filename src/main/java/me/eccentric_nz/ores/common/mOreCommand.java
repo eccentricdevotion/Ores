@@ -27,7 +27,7 @@ public class mOreCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (sender instanceof Player player) {
             UUID uuid = player.getUniqueId();
-            if (cmd.getName().equalsIgnoreCase("ogive")) {
+            if (cmd.getName().equalsIgnoreCase("moregive")) {
                 if (args.length < 1) {
                     player.sendMessage("Too few command arguments!");
                     return false;

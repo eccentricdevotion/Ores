@@ -33,7 +33,7 @@ public class mOreTabCompleter implements TabCompleter {
     public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
         String lastArg = args[args.length - 1];
         if (args.length == 1) {
-            if (cmd.getName().equalsIgnoreCase("ogive")) {
+            if (cmd.getName().equalsIgnoreCase("moregive")) {
                 return partial(lastArg, GIVE_SUBS);
             }
             if (cmd.getName().equalsIgnoreCase("hud")) {
