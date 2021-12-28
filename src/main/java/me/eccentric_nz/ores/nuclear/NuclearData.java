@@ -18,6 +18,7 @@ public class NuclearData {
     private boolean powered;
     private boolean source;
     private boolean receiver;
+    private boolean wet;
     private int length;
 
     public PipeShape getShape() {
@@ -94,6 +95,14 @@ public class NuclearData {
 
     public void setReceiver(boolean receiver) {
         this.receiver = receiver;
+    }
+
+    public boolean isWet() {
+        return wet;
+    }
+
+    public void setWet(boolean wet) {
+        this.wet = wet;
     }
 
     public int getLength() {

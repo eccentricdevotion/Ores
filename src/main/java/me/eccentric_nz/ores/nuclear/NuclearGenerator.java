@@ -2,6 +2,7 @@ package me.eccentric_nz.ores.nuclear;
 
 import me.eccentric_nz.ores.mOre;
 import me.eccentric_nz.ores.ore.OreData;
+import me.eccentric_nz.ores.pipe.CustomBlockData;
 import me.eccentric_nz.ores.pipe.PipeCoords;
 import me.eccentric_nz.ores.pipe.PipePath;
 import me.eccentric_nz.ores.pipe.PipeShape;
@@ -15,14 +16,17 @@ import org.bukkit.block.Hopper;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.block.data.MultipleFacing;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class NuclearGenerator implements Runnable {
 
     private final List<BlockFace> faces = Arrays.asList(BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST);
     private final Levelled water = (Levelled) Bukkit.createBlockData(Material.WATER);
+    int count = 0;
 
     public NuclearGenerator() {
         water.setLevel(15);
@@ -30,9 +34,12 @@ public class NuclearGenerator implements Runnable {
 
     public NuclearData getData(Block block) {
         NuclearData data = new NuclearData();
+        data.setGenerator(block);
         // is it powered?
         int amount = NuclearInventory.getAmount(block);
         data.setPowered(amount > 0);
+        CustomBlockData customBlockData = new CustomBlockData(block, mOre.getPlugin());
+        data.setWet(customBlockData.get(mOre.getWetKey(), PersistentDataType.INTEGER) == 1);
         // find the collector
         for (BlockFace face : faces) {
             Block attached = block.getRelative(face);
@@ -62,6 +69,7 @@ public class NuclearGenerator implements Runnable {
                         PipePath.PipeData pipeData = new PipePath().getExit(pipe.getLocation(), shape, face);
                         data.setLength(pipeData.getLength());
                         data.setEnd(pipeData.getExit());
+                        data.setWet(pipeData.getExit().getBlock().getType().equals(Material.WATER));
                         data.setReceiver(pipeData.getExit().getBlock().getState() instanceof Container);
                         break;
                     }
@@ -86,7 +94,11 @@ public class NuclearGenerator implements Runnable {
 
     @Override
     public void run() {
+        count++;
         for (Block generator : NuclearStorage.getBlocks()) {
+            if (!generator.getChunk().isLoaded()) {
+                return;
+            }
             // get nuclear data
             NuclearData data = getData(generator);
             if (data.isPowered() && data.hasSource() && data.getShape() != null) {
@@ -106,10 +118,13 @@ public class NuclearGenerator implements Runnable {
                         ItemStack exitItem = toMove;
                         if (data.hasReceiver()) {
                             // put it in the container
-                            // TODO probably need to check there is room in container / chunk is loaded etc...
                             Bukkit.getScheduler().scheduleSyncDelayedTask(mOre.getPlugin(), () -> {
                                 Container container = (Container) data.getEnd().getBlock().getState();
-                                container.getInventory().addItem(exitItem);
+                                HashMap<Integer, ItemStack> map = container.getInventory().addItem(exitItem);
+                                if (!map.isEmpty()) {
+                                    Location exit = data.getEnd().add(0.5, 0, 0.5);
+                                    data.getEnd().getWorld().dropItem(exit, exitItem);
+                                }
                             }, data.getLength() * mOre.getPlugin().getConfig().getLong("nuclear.pipe_ticks"));
                         } else {
                             // spawn item at end pipe location
@@ -122,23 +137,46 @@ public class NuclearGenerator implements Runnable {
                 }
                 if (data.getWater() != null) {
                     boolean hasLevels = data.getWater().getType().equals(Material.WATER_CAULDRON);
+                    Levelled levelled = null;
                     if (hasLevels) {
-                        Levelled levelled = (Levelled) data.getWater().getBlockData();
+                        levelled = (Levelled) data.getWater().getBlockData();
                         hasLevels = levelled.getLevel() > 0;
                     }
                     Material material = data.getEnd().getBlock().getType();
                     if (hasLevels) {
                         if (!material.equals(Material.WATER)) {
-                            Bukkit.getScheduler().scheduleSyncDelayedTask(mOre.getPlugin(), () -> {
-                                data.getEnd().getBlock().setType(Material.WATER);
-                            }, data.getLength() * mOre.getPlugin().getConfig().getLong("nuclear.pipe_ticks"));
+                            int level = levelled.getLevel();
+//                            Bukkit.getScheduler().scheduleSyncDelayedTask(mOre.getPlugin(), () -> {
+                            data.getEnd().getBlock().setType(Material.WATER);
+                            if (!data.isWet()) {
+                                CustomBlockData customBlockData = new CustomBlockData(generator, mOre.getPlugin());
+                                customBlockData.set(mOre.getWetKey(), PersistentDataType.INTEGER, 1);
+                                // start runnable to reduce water levels
+                                NuclearLevelReducer reducer = new NuclearLevelReducer(data, level);
+                                int task = Bukkit.getScheduler().scheduleSyncRepeatingTask(mOre.getPlugin(), reducer, mOre.getPlugin().getConfig().getLong("nuclear.water_ticks"), mOre.getPlugin().getConfig().getLong("nuclear.water_ticks"));
+                                reducer.setTask(task);
+                            }
+//                            }, data.getLength() * mOre.getPlugin().getConfig().getLong("nuclear.pipe_ticks"));
                         }
                     } else if (material.equals(Material.WATER)) {
                         // remove water
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(mOre.getPlugin(), () -> {
-                            data.getEnd().getBlock().setType(Material.AIR);
-                        }, data.getLength() * mOre.getPlugin().getConfig().getLong("nuclear.pipe_ticks"));
+                        CustomBlockData customBlockData = new CustomBlockData(generator, mOre.getPlugin());
+                        customBlockData.set(mOre.getWetKey(), PersistentDataType.INTEGER, 0);
+//                        Bukkit.getScheduler().scheduleSyncDelayedTask(mOre.getPlugin(), () -> {
+                        data.getEnd().getBlock().setType(Material.AIR);
+//                        }, data.getLength() * mOre.getPlugin().getConfig().getLong("nuclear.pipe_ticks"));
                     }
+                }
+            } else {
+                if (data.getEnd().getBlock().getType().equals(Material.WATER)) {
+                    // remove water
+                    if (generator != null) {
+                        CustomBlockData customBlockData = new CustomBlockData(generator, mOre.getPlugin());
+                        customBlockData.set(mOre.getWetKey(), PersistentDataType.INTEGER, 0);
+                    }
+//                    Bukkit.getScheduler().scheduleSyncDelayedTask(mOre.getPlugin(), () -> {
+                    data.getEnd().getBlock().setType(Material.AIR);
+//                    }, data.getLength() * mOre.getPlugin().getConfig().getLong("nuclear.pipe_ticks"));
                 }
             }
         }

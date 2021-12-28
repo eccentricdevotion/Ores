@@ -30,6 +30,7 @@ public class mOre extends JavaPlugin {
     private static NamespacedKey pipeKey;
     private static NamespacedKey collectorKey;
     private static NamespacedKey generatorKey;
+    private static NamespacedKey wetKey;
     String pluginName;
     private NuclearStorage service;
 
@@ -53,12 +54,17 @@ public class mOre extends JavaPlugin {
         return generatorKey;
     }
 
+    public static NamespacedKey getWetKey() {
+        return wetKey;
+    }
+
     public static HashMap<UUID, String> getHudPlayers() {
         return hudPlayers;
     }
 
     @Override
     public void onDisable() {
+        getServer().getScheduler().cancelTasks(this);
     }
 
     @Override
@@ -68,6 +74,7 @@ public class mOre extends JavaPlugin {
         pipeKey = new NamespacedKey(this, "lead_pipe");
         collectorKey = new NamespacedKey(this, "lead_collector");
         generatorKey = new NamespacedKey(this, "nuclear_generator");
+        wetKey = new NamespacedKey(this, "wet_pipe");
         saveDefaultConfig();
         service = NuclearStorage.getInstance();
         try {

@@ -97,6 +97,7 @@ public class CommonListener implements Listener {
             // set persistent data
             CustomBlockData customBlockData = new CustomBlockData(block, plugin);
             customBlockData.set(mOre.getGeneratorKey(), PersistentDataType.INTEGER, 0);
+            customBlockData.set(mOre.getWetKey(), PersistentDataType.INTEGER, 0);
             // save block storage
             NuclearStorage.addBlock(block);
         }
@@ -208,7 +209,6 @@ public class CommonListener implements Listener {
                 PipeShape shape = PipeShape.get(frame.getWorld(), new PipeCoords(frame.getLocation().getBlockX(), frame.getLocation().getBlockY(), frame.getLocation().getBlockZ()));
                 if (shape != null) {
                     Location end = new PipePath().getExit(frame.getLocation(), shape, event.getPlayer().getFacing()).getExit();
-//                    Bukkit.getLogger().log(Level.INFO, "Pipe shape = " + shape + ", end location: " + end);
                     end.getBlock().setType(Material.LIGHT_BLUE_CARPET);
                 }
                 event.setCancelled(true);
