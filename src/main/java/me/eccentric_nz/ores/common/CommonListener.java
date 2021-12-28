@@ -7,7 +7,10 @@ import me.eccentric_nz.ores.ore.OreBroadcast;
 import me.eccentric_nz.ores.ore.OreCounter;
 import me.eccentric_nz.ores.ore.OreData;
 import me.eccentric_nz.ores.ore.OreType;
-import me.eccentric_nz.ores.pipe.*;
+import me.eccentric_nz.ores.pipe.CustomBlockData;
+import me.eccentric_nz.ores.pipe.PipeCoords;
+import me.eccentric_nz.ores.pipe.PipeFrame;
+import me.eccentric_nz.ores.pipe.PipeShape;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -24,7 +27,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
@@ -201,20 +203,20 @@ public class CommonListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.NORMAL)
-    public void onInteractEntity(PlayerInteractEntityEvent event) {
-        if (event.getRightClicked() instanceof ItemFrame frame) {
-            ItemStack is = frame.getItem();
-            if (isPipe(is)) {
-                PipeShape shape = PipeShape.get(frame.getWorld(), new PipeCoords(frame.getLocation().getBlockX(), frame.getLocation().getBlockY(), frame.getLocation().getBlockZ()));
-                if (shape != null) {
-                    Location end = new PipePath().getExit(frame.getLocation(), shape, event.getPlayer().getFacing()).getExit();
-                    end.getBlock().setType(Material.LIGHT_BLUE_CARPET);
-                }
-                event.setCancelled(true);
-            }
-        }
-    }
+//    @EventHandler(priority = EventPriority.NORMAL)
+//    public void onInteractEntity(PlayerInteractEntityEvent event) {
+//        if (event.getRightClicked() instanceof ItemFrame frame) {
+//            ItemStack is = frame.getItem();
+//            if (isPipe(is)) {
+//                PipeShape shape = PipeShape.get(frame.getWorld(), new PipeCoords(frame.getLocation().getBlockX(), frame.getLocation().getBlockY(), frame.getLocation().getBlockZ()));
+//                if (shape != null) {
+//                    Location end = new PipePath().getExit(frame.getLocation(), shape, event.getPlayer().getFacing()).getExit();
+//                    end.getBlock().setType(Material.LIGHT_BLUE_CARPET);
+//                }
+//                event.setCancelled(true);
+//            }
+//        }
+//    }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onInteract(PlayerInteractEvent event) {
@@ -264,7 +266,7 @@ public class CommonListener implements Listener {
             customBlockData.set(mOre.getGeneratorKey(), PersistentDataType.INTEGER, amount);
             if (illegal.size() > 0) {
                 for (ItemStack is : illegal) {
-                    block.getWorld().dropItem(block.getLocation().add(0, 1, 0), is);
+                    block.getWorld().dropItem(block.getLocation().add(0.5, 1, 0.5), is);
                 }
             }
         }
