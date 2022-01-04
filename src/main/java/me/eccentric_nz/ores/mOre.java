@@ -1,6 +1,7 @@
 package me.eccentric_nz.ores;
 
 import me.eccentric_nz.ores.common.CommonListener;
+import me.eccentric_nz.ores.common.Mushroom;
 import me.eccentric_nz.ores.common.mOreCommand;
 import me.eccentric_nz.ores.common.mOreTabCompleter;
 import me.eccentric_nz.ores.hud.HUDListener;
@@ -103,6 +104,9 @@ public class mOre extends JavaPlugin {
         getCommand("hud").setTabCompleter(completer);
         getCommand("ore").setTabCompleter(completer);
         getCommand("pipe").setTabCompleter(completer);
+        Mushroom mushroom = new Mushroom();
+        getCommand("mush").setExecutor(mushroom);
+        getCommand("mush").setTabCompleter(mushroom);
         new PipeRecipes(this).addRecipes();
         new NuclearRecipe(this).addRecipe();
         // need a delay, as worlds may not have loaded yet
