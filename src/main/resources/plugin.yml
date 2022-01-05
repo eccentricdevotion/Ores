@@ -17,6 +17,11 @@ permissions:
     description: Permission to use the /ore and /pipe commands.
     default: op
 commands:
+  mush:
+    description: Convert mushroom blocks.
+    usage: /<command> [red|brown|stem] [radius]
+    permission: ores.use
+    permission-message: You don't have the permission <permission> to use this command
   moregive:
     description: Give Ore items.
     aliases: [ mg ]
