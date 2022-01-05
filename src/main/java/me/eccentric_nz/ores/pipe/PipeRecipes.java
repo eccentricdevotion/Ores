@@ -36,10 +36,10 @@ public class PipeRecipes {
         pipe.setIngredient('I', exact);
         plugin.getServer().addRecipe(pipe);
         // lead collector
-        ItemStack collector = new ItemStack(Material.NOTE_BLOCK);
+        ItemStack collector = new ItemStack(Material.BROWN_MUSHROOM_BLOCK);
         ItemMeta collectorItemMeta = collector.getItemMeta();
         collectorItemMeta.setDisplayName("Lead Collector");
-        collectorItemMeta.setCustomModelData(1000);
+        collectorItemMeta.setCustomModelData(1003);
         collectorItemMeta.getPersistentDataContainer().set(mOre.getCollectorKey(), PersistentDataType.INTEGER, 1);
         collector.setItemMeta(collectorItemMeta);
         ShapedRecipe collectorRecipe = new ShapedRecipe(mOre.getCollectorKey(), collector);
