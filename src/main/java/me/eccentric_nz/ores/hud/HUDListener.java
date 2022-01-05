@@ -30,6 +30,10 @@ public class HUDListener implements Listener {
                     material = "Uranium Ore";
                 } else if (mushroom.matches(OreData.leadMushroom)) {
                     material = "Lead Ore";
+                } else if (mushroom.matches(OreData.nuclearGeneratorMushroom)) {
+                    material = "Nuclear Generator";
+                } else if (OreData.isCollectorMushroom(mushroom)) {
+                    material = "Lead Collector";
                 }
                 show = true;
             }
