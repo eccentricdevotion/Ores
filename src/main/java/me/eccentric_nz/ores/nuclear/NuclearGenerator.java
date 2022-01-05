@@ -168,7 +168,7 @@ public class NuclearGenerator implements Runnable {
                     }
                 }
             } else {
-                if (data.getEnd().getBlock().getType().equals(Material.WATER)) {
+                if (data.getEnd() != null && data.getEnd().getBlock().getType().equals(Material.WATER)) {
                     // remove water
                     if (generator != null) {
                         CustomBlockData customBlockData = new CustomBlockData(generator, mOre.getPlugin());
